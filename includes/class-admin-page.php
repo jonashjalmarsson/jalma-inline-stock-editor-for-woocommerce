@@ -87,11 +87,42 @@ class JQSW_Admin_Page {
 			<h1><?php esc_html_e( 'Quick Stock', 'jalma-quick-stock-for-woocommerce' ); ?></h1>
 			<p><?php esc_html_e( 'Update stock quantities and low-stock thresholds without opening each product. Click a field, type a new value, tab to the next. Changes save automatically.', 'jalma-quick-stock-for-woocommerce' ); ?></p>
 
+			<?php
+			/**
+			 * Fires right after the page heading, before the filter row.
+			 * Add-on plugins can inject announcements, upgrade notices, or
+			 * extra controls here.
+			 *
+			 * @since 1.0.5
+			 */
+			do_action( 'jqsw_before_filters' );
+			?>
+
 			<div class="jqsw-filters">
 				<select class="jqsw-filter-category wc-enhanced-select" data-placeholder="<?php esc_attr_e( 'All categories', 'jalma-quick-stock-for-woocommerce' ); ?>"></select>
 				<select class="jqsw-filter-stock-status"></select>
 				<input type="search" class="jqsw-filter-search" placeholder="<?php esc_attr_e( 'Search name or SKU…', 'jalma-quick-stock-for-woocommerce' ); ?>">
+				<?php
+				/**
+				 * Fires inside the filter row so add-ons can inject extra
+				 * filter controls (e.g. supplier, price range, brand).
+				 *
+				 * @since 1.0.5
+				 */
+				do_action( 'jqsw_filters_extra' );
+				?>
 			</div>
+
+			<?php
+			/**
+			 * Fires after the filter row and before the table.
+			 * Use this to inject a bulk-actions bar, summary counts, or an
+			 * export button from an add-on.
+			 *
+			 * @since 1.0.5
+			 */
+			do_action( 'jqsw_before_table' );
+			?>
 
 			<div class="jqsw-table-wrap">
 				<table class="widefat striped jqsw-table">
@@ -115,6 +146,17 @@ class JQSW_Admin_Page {
 				<span class="jqsw-page-info"></span>
 				<button type="button" class="button jqsw-next" disabled><?php esc_html_e( 'Next', 'jalma-quick-stock-for-woocommerce' ); ?> &rsaquo;</button>
 			</div>
+
+			<?php
+			/**
+			 * Fires after the entire Quick Stock UI. Use this to inject
+			 * footer content, upgrade links, or documentation panels from
+			 * an add-on.
+			 *
+			 * @since 1.0.5
+			 */
+			do_action( 'jqsw_after_table' );
+			?>
 		</div>
 		<?php
 	}

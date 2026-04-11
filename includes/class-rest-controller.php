@@ -28,6 +28,16 @@ class JQSW_Rest_Controller {
 	}
 
 	public function register_routes() {
+		/**
+		 * Fires before the built-in REST routes are registered. Add-on plugins
+		 * can register additional routes under the same namespace.
+		 *
+		 * @since 1.0.5
+		 *
+		 * @param string $namespace The REST namespace ('jalma-quick-stock/v1').
+		 */
+		do_action( 'jqsw_before_register_routes', self::NAMESPACE_ROOT );
+
 		register_rest_route( self::NAMESPACE_ROOT, '/products', [
 			'methods'             => 'GET',
 			'callback'            => [ $this, 'list_products' ],
@@ -90,6 +100,15 @@ class JQSW_Rest_Controller {
 				'product_id' => [ 'required' => true, 'sanitize_callback' => 'absint' ],
 			],
 		] );
+
+		/**
+		 * Fires after the built-in REST routes are registered.
+		 *
+		 * @since 1.0.5
+		 *
+		 * @param string $namespace The REST namespace ('jalma-quick-stock/v1').
+		 */
+		do_action( 'jqsw_after_register_routes', self::NAMESPACE_ROOT );
 	}
 
 	public function check_permission() {
@@ -229,6 +248,9 @@ class JQSW_Rest_Controller {
 			return new WP_Error( 'jqsw_not_found', __( 'Product not found.', 'jalma-quick-stock-for-woocommerce' ), [ 'status' => 404 ] );
 		}
 
+		$old_stock     = $product->get_stock_quantity();
+		$old_threshold = $product->get_low_stock_amount();
+
 		$stock            = $request->get_param( 'stock' );
 		$low_stock_amount = $request->get_param( 'low_stock_amount' );
 
@@ -242,6 +264,26 @@ class JQSW_Rest_Controller {
 		}
 
 		$product->save();
+
+		/**
+		 * Fires after a product's stock and/or low-stock threshold has been
+		 * updated through Quick Stock. This is the hook an adjustment-log
+		 * add-on would listen to for writing audit entries.
+		 *
+		 * @since 1.0.5
+		 *
+		 * @param WC_Product $product       The saved product object.
+		 * @param array      $changes       Associative array with 'old_stock',
+		 *                                  'new_stock', 'old_threshold',
+		 *                                  'new_threshold'.
+		 * @param WP_REST_Request $request  The original request.
+		 */
+		do_action( 'jqsw_after_product_update', $product, [
+			'old_stock'     => $old_stock,
+			'new_stock'     => $product->get_stock_quantity(),
+			'old_threshold' => $old_threshold,
+			'new_threshold' => $product->get_low_stock_amount(),
+		], $request );
 
 		return rest_ensure_response( $this->product_to_array( $product ) );
 	}
@@ -344,7 +386,7 @@ class JQSW_Rest_Controller {
 		// WC returns '' for unset overrides; normalize to null for JSON clarity.
 		$low_stock_normalized = ( $low_stock === '' || $low_stock === null ) ? null : (int) $low_stock;
 
-		return [
+		$data = [
 			'id'                    => $product->get_id(),
 			'title'                 => $product->is_type( 'variation' ) ? $product->get_name() : $product->get_title(),
 			'sku'                   => $product->get_sku(),
@@ -361,5 +403,17 @@ class JQSW_Rest_Controller {
 			'variation_count'       => $product->is_type( 'variable' ) ? count( $product->get_children() ) : 0,
 			'manage_per_variation'  => $product->is_type( 'variable' ) ? ( ! $product->get_manage_stock() ) : false,
 		];
+
+		/**
+		 * Filter the serialized product data returned in REST responses.
+		 * Add-on plugins can add custom fields here that their own JS columns
+		 * will consume when rendering the table.
+		 *
+		 * @since 1.0.5
+		 *
+		 * @param array      $data    The serialized product data.
+		 * @param WC_Product $product The product object.
+		 */
+		return apply_filters( 'jqsw_product_row_data', $data, $product );
 	}
 }

@@ -4,7 +4,7 @@ Tags: woocommerce, stock, inventory, bulk edit, low stock
 Requires at least: 5.0
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.0.4
+Stable tag: 1.0.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -65,6 +65,9 @@ Not in the free version. A stock adjustment log is planned for the Pro version.
 3. Category filter and search.
 
 == Changelog ==
+
+= 1.0.5 =
+* Developer: added extension hooks for add-on plugins. Actions: `jqsw_before_register_routes`, `jqsw_after_register_routes`, `jqsw_after_product_update`, `jqsw_before_filters`, `jqsw_filters_extra`, `jqsw_before_table`, `jqsw_after_table`. Filter: `jqsw_product_row_data`. No visible changes for end users.
 
 = 1.0.4 =
 * Improvement: replaced the Start tracking / Stop tracking button pair with a single "Track stock" checkbox per row. Consistent with the existing "Manage stock per variation" toggle for variable products and semantically correct for a boolean on/off state. Cleaner visually and less ambiguous than two near-identical buttons.
