@@ -33,3 +33,12 @@ msgstr "Produkten hittades inte."
 
 msgid "Product is not a variable product."
 msgstr "Produkten är inte en variabel produkt."
+
+msgid "Stock tracking"
+msgstr "Lagerspårning"
+
+msgid "Start tracking"
+msgstr "Starta spårning"
+
+msgid "Stop tracking"
+msgstr "Stoppa spårning"

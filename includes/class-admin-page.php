@@ -64,9 +64,9 @@ class JQSW_Admin_Page {
 				'globalHint'         => __( '%d (global)', 'jalma-quick-stock-for-woocommerce' ),
 				'loading'            => __( 'Loading products…', 'jalma-quick-stock-for-woocommerce' ),
 				'noResults'          => __( 'No products match your filters.', 'jalma-quick-stock-for-woocommerce' ),
-				'enableManagement'   => __( 'Enable', 'jalma-quick-stock-for-woocommerce' ),
-				'disableManagement'  => __( 'Disable', 'jalma-quick-stock-for-woocommerce' ),
-				'actions'            => __( 'Actions', 'jalma-quick-stock-for-woocommerce' ),
+				'enableManagement'   => __( 'Start tracking', 'jalma-quick-stock-for-woocommerce' ),
+				'disableManagement'  => __( 'Stop tracking', 'jalma-quick-stock-for-woocommerce' ),
+				'actions'            => __( 'Stock tracking', 'jalma-quick-stock-for-woocommerce' ),
 				'notTracked'         => __( 'Not tracked', 'jalma-quick-stock-for-woocommerce' ),
 				'perVariation'       => __( '(managed per variation)', 'jalma-quick-stock-for-woocommerce' ),
 				'managePerVariation' => __( 'Manage stock per variation', 'jalma-quick-stock-for-woocommerce' ),
@@ -102,7 +102,7 @@ class JQSW_Admin_Page {
 							<th class="jqsw-col-stock"><?php esc_html_e( 'Stock', 'jalma-quick-stock-for-woocommerce' ); ?></th>
 							<th class="jqsw-col-threshold"><?php esc_html_e( 'Low stock threshold', 'jalma-quick-stock-for-woocommerce' ); ?></th>
 							<th class="jqsw-col-status"></th>
-							<th class="jqsw-col-actions"><?php esc_html_e( 'Actions', 'jalma-quick-stock-for-woocommerce' ); ?></th>
+							<th class="jqsw-col-actions"><?php esc_html_e( 'Stock tracking', 'jalma-quick-stock-for-woocommerce' ); ?></th>
 						</tr>
 					</thead>
 					<tbody id="jqsw-tbody">

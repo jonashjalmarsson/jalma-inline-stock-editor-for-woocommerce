@@ -3,7 +3,7 @@
  * Plugin Name: Jalma Quick Stock for WooCommerce
  * Plugin URI:
  * Description: Edit WooCommerce stock quantities and low-stock thresholds directly from a single table — no more clicking into each product. Inline edit, keyboard navigation, category filter, full variation support.
- * Version: 1.0.2
+ * Version: 1.0.3
  * Author: jonashjalmarsson
  * Author URI: https://jonashjalmarsson.se
  * License: GPLv3
@@ -15,7 +15,24 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'JQSW_VERSION', '1.0.2' );
+/*
+ * Declare HPOS (High-Performance Order Storage) compatibility. This plugin
+ * only touches product data — never orders — so it's safe with both the
+ * legacy post-type storage and the new custom order tables. Without this
+ * declaration WooCommerce shows a yellow "incompatible" warning on the
+ * plugins screen even though the plugin works fine in both modes.
+ */
+add_action( 'before_woocommerce_init', function () {
+	if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+		\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility(
+			'custom_order_tables',
+			__FILE__,
+			true
+		);
+	}
+} );
+
+define( 'JQSW_VERSION', '1.0.3' );
 define( 'JQSW_SLUG', 'jalma-quick-stock-for-woocommerce' );
 define( 'JQSW_PATH', plugin_dir_path( __FILE__ ) );
 define( 'JQSW_URL', plugin_dir_url( __FILE__ ) );

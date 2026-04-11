@@ -4,7 +4,7 @@ Tags: woocommerce, stock, inventory, bulk edit, low stock
 Requires at least: 5.0
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -66,6 +66,10 @@ Not in the free version. A stock adjustment log is planned for the Pro version.
 
 == Changelog ==
 
+= 1.0.3 =
+* Improvement: clearer labels in the stock-tracking column. The column header is now "Stock tracking" and the buttons read "Start tracking" and "Stop tracking" so it's obvious what they toggle.
+* Compatibility: declared HPOS (High-Performance Order Storage) compatibility. This plugin only touches product data so it's safe in both the legacy and the new custom order tables — WooCommerce will no longer show an incompatibility warning on the plugins screen.
+
 = 1.0.2 =
 * New: dedicated Actions column with Enable/Disable buttons for each product. You can now stop tracking stock on a product straight from the table, and re-enable it later — the last known stock value is preserved.
 * Change: the "Manage stock per variation" checkbox for variable products moved from the product cell to the Actions column for consistency.
@@ -88,6 +92,9 @@ Not in the free version. A stock adjustment log is planned for the Pro version.
 * Translation-ready, Swedish (sv_SE) included.
 
 == Upgrade Notice ==
+
+= 1.0.3 =
+Clearer Stock tracking column labels and formal HPOS compatibility declaration.
 
 = 1.0.2 =
 New Actions column with Enable/Disable buttons and a cleaner layout for variable products.
