@@ -1,0 +1,35 @@
+# Swedish (Sweden) translation for Jalma Quick Stock for WooCommerce
+# Copyright (C) 2026 jonashjalmarsson
+# This file is distributed under the same license as the Jalma Quick Stock for WooCommerce plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: Jalma Quick Stock for WooCommerce 0.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-04-11 00:00+0000\n"
+"PO-Revision-Date: 2026-04-11 00:00+0000\n"
+"Last-Translator: jonashjalmarsson\n"
+"Language-Team: Swedish\n"
+"Language: sv_SE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. translators: %s: plugin name
+msgid "%s requires WooCommerce to be active."
+msgstr "%s kräver att WooCommerce är aktiverat."
+
+msgid "Quick Stock"
+msgstr "Snabbt lager"
+
+msgid "Update stock quantities and low-stock thresholds without opening each product. Inline edit, keyboard navigation, full variation support."
+msgstr "Uppdatera lagersaldo och trösklar för lågt lager utan att öppna varje produkt. Inline-redigering, tangentbordsnavigering, fullt stöd för variationer."
+
+msgid "The interactive Quick Stock table will be rendered here. (Scaffold version — table renderer coming in the next iteration.)"
+msgstr "Quick Stock-tabellen renderas här. (Scaffold-version — tabellrenderaren kommer i nästa iteration.)"
+
+msgid "Product not found."
+msgstr "Produkten hittades inte."
+
+msgid "Product is not a variable product."
+msgstr "Produkten är inte en variabel produkt."

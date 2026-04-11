@@ -1,0 +1,13 @@
+.git/
+.gitignore
+.vscode/
+.claude/
+.DS_Store
+RELEASE-CHECKLIST.md
+bin/
+.dist/
+dist/
+changelog.md
+readme.md
+trunk/
+assets/
