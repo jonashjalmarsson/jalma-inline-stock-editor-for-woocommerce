@@ -375,29 +375,55 @@
 			}
 		});
 
-		// Variable product: toggle per-variation stock management
+		// Variable product: toggle per-variation stock management.
+		// Replace the parent row in place, and remove/add variation rows
+		// as needed — no full reload.
 		$(document).on('change', '.jqsw-toggle-variation-stock', function () {
 			var productId = $(this).data('product-id');
 			var checked   = this.checked;
 			var $this     = $(this);
 			$this.prop('disabled', true);
-			apiPost('toggle-variation-stock', { product_id: productId, manage_per_variation: checked }).then(function () {
-				load(); // reload current page to reflect new state
-			}).catch(function () {
+			apiPost('toggle-variation-stock', { product_id: productId, manage_per_variation: checked }).then(function (updated) {
+				// Remove any existing variation rows for this parent
+				$('tr[data-parent-id="' + productId + '"]').remove();
+				// Replace the parent row with the updated product state
+				var $parent = $('tr[data-product-id="' + productId + '"]').first();
+				$parent.replaceWith(renderProductRow(updated));
+				// If we're now in per-variation mode, fetch and append the variations
+				if (updated.type === 'variable' && updated.manage_per_variation) {
+					loadVariations(productId);
+				}
+				// Brief status feedback on the new parent row
+				var $status = $('tr[data-product-id="' + productId + '"] .jqsw-status').first();
+				$status.removeClass('jqsw-status-saving jqsw-status-error').addClass('jqsw-status-saved').text(S.saved);
+				setTimeout(function () { $status.text('').removeClass('jqsw-status-saved'); }, 2000);
+			}).catch(function (err) {
+				// Roll back the checkbox state on failure
 				$this.prop('checked', !checked);
 				$this.prop('disabled', false);
+				var $status = $('tr[data-product-id="' + productId + '"] .jqsw-status').first();
+				$status.removeClass('jqsw-status-saving jqsw-status-saved').addClass('jqsw-status-error').attr('title', err.message).text(S.saveError);
 			});
 		});
 
-		// Enable stock management on an untracked product
+		// Enable stock management on an untracked product — replace just the row.
 		$(document).on('click', '.jqsw-enable-management', function () {
 			var productId = $(this).data('product-id');
 			var $btn      = $(this);
 			$btn.prop('disabled', true);
-			apiPost('enable-stock-management', { product_id: productId }).then(function () {
-				load();
-			}).catch(function () {
+			apiPost('enable-stock-management', { product_id: productId }).then(function (updated) {
+				var $row = $('tr[data-product-id="' + productId + '"]').first();
+				$row.replaceWith(renderProductRow(updated));
+				// Focus the new stock input so user can start typing immediately
+				var $newInput = $('tr[data-product-id="' + productId + '"] .jqsw-stock-input').first();
+				if ($newInput.length) { $newInput.focus().select(); }
+				// Brief status feedback
+				var $status = $('tr[data-product-id="' + productId + '"] .jqsw-status').first();
+				$status.removeClass('jqsw-status-saving jqsw-status-error').addClass('jqsw-status-saved').text(S.saved);
+				setTimeout(function () { $status.text('').removeClass('jqsw-status-saved'); }, 2000);
+			}).catch(function (err) {
 				$btn.prop('disabled', false);
+				alert(err.message);
 			});
 		});
 	}

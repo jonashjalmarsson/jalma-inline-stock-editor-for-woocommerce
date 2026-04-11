@@ -4,7 +4,7 @@ Tags: woocommerce, stock, inventory, bulk edit, low stock
 Requires at least: 5.0
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -66,6 +66,9 @@ Not in the free version. A stock adjustment log is planned for the Pro version.
 
 == Changelog ==
 
+= 1.0.1 =
+* Improvement: "Enable stock management" and the variable-product stock-mode toggle now update just the affected row via AJAX, instead of reloading the whole table. Keeps scroll position and visual context.
+
 = 1.0.0 =
 * Initial release.
 * Single-table view of all products with inline-editable stock and low-stock threshold.
@@ -81,6 +84,9 @@ Not in the free version. A stock adjustment log is planned for the Pro version.
 * Translation-ready, Swedish (sv_SE) included.
 
 == Upgrade Notice ==
+
+= 1.0.1 =
+Per-row updates for Enable and variation toggle (no more full table reloads).
 
 = 1.0.0 =
 Initial release.
