@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Jalma Quick Stock for WooCommerce banner
+     High-resolution master: 1544x500. Scales down to 772x250 for the
+     low-res variant. Matches the brand layout: green background, big
+     serif title, italic subtitle, black footer strip with JALMA. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1544 500" width="1544" height="500">
+  <!-- Green background -->
+  <rect width="1544" height="500" fill="#B3C734"/>
+
+  <!-- Main title in big serif -->
+  <text x="772" y="265"
+        text-anchor="middle"
+        font-family="Baskerville, Georgia, 'Times New Roman', serif"
+        font-size="170"
+        font-weight="400"
+        fill="#080904">Quick Stock</text>
+
+  <!-- Subtitle -->
+  <text x="772" y="335"
+        text-anchor="middle"
+        font-family="Baskerville, Georgia, 'Times New Roman', serif"
+        font-size="48"
+        font-weight="400"
+        font-style="italic"
+        fill="#080904">for WooCommerce</text>
+
+  <!-- Black footer strip -->
+  <rect x="0" y="420" width="1544" height="80" fill="#080904"/>
+
+  <!-- JALMA label -->
+  <text x="772" y="475"
+        text-anchor="middle"
+        font-family="'Helvetica Neue', Arial, sans-serif"
+        font-size="36"
+        font-weight="700"
+        letter-spacing="6"
+        fill="#B3C734">JALMA</text>
+</svg>

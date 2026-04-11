@@ -4,7 +4,7 @@ Tags: woocommerce, stock, inventory, bulk edit, low stock
 Requires at least: 5.0
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -66,6 +66,10 @@ Not in the free version. A stock adjustment log is planned for the Pro version.
 
 == Changelog ==
 
+= 1.0.2 =
+* New: dedicated Actions column with Enable/Disable buttons for each product. You can now stop tracking stock on a product straight from the table, and re-enable it later — the last known stock value is preserved.
+* Change: the "Manage stock per variation" checkbox for variable products moved from the product cell to the Actions column for consistency.
+
 = 1.0.1 =
 * Improvement: "Enable stock management" and the variable-product stock-mode toggle now update just the affected row via AJAX, instead of reloading the whole table. Keeps scroll position and visual context.
 
@@ -84,6 +88,9 @@ Not in the free version. A stock adjustment log is planned for the Pro version.
 * Translation-ready, Swedish (sv_SE) included.
 
 == Upgrade Notice ==
+
+= 1.0.2 =
+New Actions column with Enable/Disable buttons and a cleaner layout for variable products.
 
 = 1.0.1 =
 Per-row updates for Enable and variation toggle (no more full table reloads).

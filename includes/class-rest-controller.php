@@ -81,6 +81,15 @@ class JQSW_Rest_Controller {
 				'product_id' => [ 'required' => true, 'sanitize_callback' => 'absint' ],
 			],
 		] );
+
+		register_rest_route( self::NAMESPACE_ROOT, '/disable-stock-management', [
+			'methods'             => 'POST',
+			'callback'            => [ $this, 'disable_stock_management' ],
+			'permission_callback' => [ $this, 'check_permission' ],
+			'args'                => [
+				'product_id' => [ 'required' => true, 'sanitize_callback' => 'absint' ],
+			],
+		] );
 	}
 
 	public function check_permission() {
@@ -291,6 +300,22 @@ class JQSW_Rest_Controller {
 		if ( $product->get_stock_quantity() === null ) {
 			$product->set_stock_quantity( 0 );
 		}
+		$product->save();
+
+		return rest_ensure_response( $this->product_to_array( $product ) );
+	}
+
+	public function disable_stock_management( $request ) {
+		$product_id = $request['product_id'];
+		$product    = wc_get_product( $product_id );
+
+		if ( ! $product ) {
+			return new WP_Error( 'jqsw_not_found', __( 'Product not found.', 'jalma-quick-stock-for-woocommerce' ), [ 'status' => 404 ] );
+		}
+
+		// Keep the existing _stock value so it can be restored if the user
+		// re-enables tracking later — just flip the management flag off.
+		$product->set_manage_stock( false );
 		$product->save();
 
 		return rest_ensure_response( $this->product_to_array( $product ) );

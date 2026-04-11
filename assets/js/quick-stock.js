@@ -118,35 +118,50 @@
 						'<div class="jqsw-product-title">' + titleLink + '</div>' +
 						'<div class="jqsw-product-sku">' + escapeHtml(S.sku) + ': ' + sku + '</div>' +
 					'</div>' +
-				'</div>';
+				'</div>' +
+			'</td>';
 
-		// If variable, add the "manage per variation" checkbox
+		var stockCell, thresholdCell, actionCell;
+
 		if (p.type === 'variable') {
-			productCell +=
-				'<label class="jqsw-variation-toggle">' +
-					'<input type="checkbox" class="jqsw-toggle-variation-stock" data-product-id="' + p.id + '"' +
-					(p.manage_per_variation ? ' checked' : '') + '> ' +
-					escapeHtml(S.managePerVariation) +
-				'</label>';
-		}
+			// Variable product: stock/threshold cells show a muted label in per-variation
+			// mode or editable inputs in parent-level mode. Actions column holds the
+			// toggle checkbox.
+			if (p.manage_per_variation) {
+				stockCell     = '<td class="jqsw-col-stock"><span class="jqsw-muted">' + escapeHtml(S.perVariation) + '</span></td>';
+				thresholdCell = '<td class="jqsw-col-threshold"><span class="jqsw-muted">' + escapeHtml(S.perVariation) + '</span></td>';
+			} else {
+				var stockValV     = p.stock == null ? '' : p.stock;
+				var thresholdValV = p.low_stock_amount == null ? '' : p.low_stock_amount;
+				var placeholderV  = formatGlobalHint(data.globalLowStockAmount || 0);
+				stockCell =
+					'<td class="jqsw-col-stock">' +
+						'<input type="number" step="1" class="jqsw-stock-input" data-product-id="' + p.id + '" value="' + escapeHtml(stockValV) + '">' +
+					'</td>';
+				thresholdCell =
+					'<td class="jqsw-col-threshold">' +
+						'<input type="number" step="1" class="jqsw-threshold-input" data-product-id="' + p.id + '" value="' + escapeHtml(thresholdValV) + '" placeholder="' + escapeHtml(placeholderV) + '">' +
+					'</td>';
+			}
 
-		productCell += '</td>';
-
-		var stockCell, thresholdCell;
-
-		if (p.type === 'variable' && p.manage_per_variation) {
-			// Parent row in per-variation mode: no direct edit, show muted label
-			stockCell = '<td class="jqsw-col-stock"><span class="jqsw-muted">' + escapeHtml(S.perVariation) + '</span></td>';
-			thresholdCell = '<td class="jqsw-col-threshold"><span class="jqsw-muted">' + escapeHtml(S.perVariation) + '</span></td>';
+			actionCell =
+				'<td class="jqsw-col-actions">' +
+					'<label class="jqsw-variation-toggle">' +
+						'<input type="checkbox" class="jqsw-toggle-variation-stock" data-product-id="' + p.id + '"' +
+						(p.manage_per_variation ? ' checked' : '') + '> ' +
+						escapeHtml(S.managePerVariation) +
+					'</label>' +
+				'</td>';
 		} else if (!p.manage_stock) {
-			// Not tracked: show enable button
-			stockCell =
-				'<td class="jqsw-col-stock">' +
-					'<span class="jqsw-muted">' + escapeHtml(S.notTracked) + '</span> ' +
+			// Not tracked simple product: empty stock/threshold cells, Enable button in actions
+			stockCell     = '<td class="jqsw-col-stock"><span class="jqsw-muted">' + escapeHtml(S.notTracked) + '</span></td>';
+			thresholdCell = '<td class="jqsw-col-threshold"></td>';
+			actionCell =
+				'<td class="jqsw-col-actions">' +
 					'<button type="button" class="button button-small jqsw-enable-management" data-product-id="' + p.id + '">' + escapeHtml(S.enableManagement) + '</button>' +
 				'</td>';
-			thresholdCell = '<td class="jqsw-col-threshold"></td>';
 		} else {
+			// Tracked simple product: editable inputs + Disable button in actions
 			var stockVal = p.stock == null ? '' : p.stock;
 			stockCell =
 				'<td class="jqsw-col-stock">' +
@@ -159,11 +174,16 @@
 				'<td class="jqsw-col-threshold">' +
 					'<input type="number" step="1" class="jqsw-threshold-input" data-product-id="' + p.id + '" value="' + escapeHtml(thresholdVal) + '" placeholder="' + escapeHtml(placeholder) + '">' +
 				'</td>';
+
+			actionCell =
+				'<td class="jqsw-col-actions">' +
+					'<button type="button" class="button button-small jqsw-disable-management" data-product-id="' + p.id + '">' + escapeHtml(S.disableManagement) + '</button>' +
+				'</td>';
 		}
 
 		var statusCell = '<td class="jqsw-col-status"><span class="jqsw-status" data-product-id="' + p.id + '"></span></td>';
 
-		return '<tr class="jqsw-row jqsw-row-' + p.type + '" data-product-id="' + p.id + '">' + productCell + stockCell + thresholdCell + statusCell + '</tr>';
+		return '<tr class="jqsw-row jqsw-row-' + p.type + '" data-product-id="' + p.id + '">' + productCell + stockCell + thresholdCell + statusCell + actionCell + '</tr>';
 	}
 
 	function renderVariationRow(v) {
@@ -200,14 +220,15 @@
 			'</td>';
 
 		var statusCell = '<td class="jqsw-col-status"><span class="jqsw-status" data-product-id="' + v.id + '"></span></td>';
+		var actionCell = '<td class="jqsw-col-actions"></td>';
 
-		return '<tr class="jqsw-row jqsw-row-variation" data-product-id="' + v.id + '" data-parent-id="' + v.parent_id + '">' + productCell + stockCell + thresholdCell + statusCell + '</tr>';
+		return '<tr class="jqsw-row jqsw-row-variation" data-product-id="' + v.id + '" data-parent-id="' + v.parent_id + '">' + productCell + stockCell + thresholdCell + statusCell + actionCell + '</tr>';
 	}
 
 	function renderTable(products) {
 		var $tbody = $('#jqsw-tbody').empty();
 		if (!products || products.length === 0) {
-			$tbody.append('<tr><td colspan="4" class="jqsw-empty">' + escapeHtml(S.noResults) + '</td></tr>');
+			$tbody.append('<tr><td colspan="5" class="jqsw-empty">' + escapeHtml(S.noResults) + '</td></tr>');
 			return;
 		}
 		products.forEach(function (p) {
@@ -234,7 +255,7 @@
 	// ────────────────────────────────────────────────────────────────────
 
 	function load() {
-		$('#jqsw-tbody').html('<tr class="jqsw-loading-row"><td colspan="4">' + escapeHtml(S.loading) + '</td></tr>');
+		$('#jqsw-tbody').html('<tr class="jqsw-loading-row"><td colspan="5">' + escapeHtml(S.loading) + '</td></tr>');
 
 		apiGet('products', {
 			page: state.page,
@@ -248,7 +269,7 @@
 			renderTable(res.products);
 			renderPagination();
 		}).catch(function (err) {
-			$('#jqsw-tbody').html('<tr><td colspan="4" class="jqsw-error">' + escapeHtml(err.message) + '</td></tr>');
+			$('#jqsw-tbody').html('<tr><td colspan="5" class="jqsw-error">' + escapeHtml(err.message) + '</td></tr>');
 		});
 	}
 
@@ -418,6 +439,24 @@
 				var $newInput = $('tr[data-product-id="' + productId + '"] .jqsw-stock-input').first();
 				if ($newInput.length) { $newInput.focus().select(); }
 				// Brief status feedback
+				var $status = $('tr[data-product-id="' + productId + '"] .jqsw-status').first();
+				$status.removeClass('jqsw-status-saving jqsw-status-error').addClass('jqsw-status-saved').text(S.saved);
+				setTimeout(function () { $status.text('').removeClass('jqsw-status-saved'); }, 2000);
+			}).catch(function (err) {
+				$btn.prop('disabled', false);
+				alert(err.message);
+			});
+		});
+
+		// Disable stock management on a tracked product — replace just the row.
+		// Keeps the _stock value intact on the server so re-enabling restores it.
+		$(document).on('click', '.jqsw-disable-management', function () {
+			var productId = $(this).data('product-id');
+			var $btn      = $(this);
+			$btn.prop('disabled', true);
+			apiPost('disable-stock-management', { product_id: productId }).then(function (updated) {
+				var $row = $('tr[data-product-id="' + productId + '"]').first();
+				$row.replaceWith(renderProductRow(updated));
 				var $status = $('tr[data-product-id="' + productId + '"] .jqsw-status').first();
 				$status.removeClass('jqsw-status-saving jqsw-status-error').addClass('jqsw-status-saved').text(S.saved);
 				setTimeout(function () { $status.text('').removeClass('jqsw-status-saved'); }, 2000);
