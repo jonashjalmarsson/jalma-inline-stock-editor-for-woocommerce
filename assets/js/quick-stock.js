@@ -153,15 +153,18 @@
 					'</label>' +
 				'</td>';
 		} else if (!p.manage_stock) {
-			// Not tracked simple product: empty stock/threshold cells, Enable button in actions
+			// Not tracked simple product: empty stock/threshold cells, unchecked toggle in actions
 			stockCell     = '<td class="jqsw-col-stock"><span class="jqsw-muted">' + escapeHtml(S.notTracked) + '</span></td>';
 			thresholdCell = '<td class="jqsw-col-threshold"></td>';
 			actionCell =
 				'<td class="jqsw-col-actions">' +
-					'<button type="button" class="button button-small jqsw-enable-management" data-product-id="' + p.id + '">' + escapeHtml(S.enableManagement) + '</button>' +
+					'<label class="jqsw-track-toggle">' +
+						'<input type="checkbox" class="jqsw-toggle-management" data-product-id="' + p.id + '"> ' +
+						escapeHtml(S.trackStock) +
+					'</label>' +
 				'</td>';
 		} else {
-			// Tracked simple product: editable inputs + Disable button in actions
+			// Tracked simple product: editable inputs + checked toggle in actions
 			var stockVal = p.stock == null ? '' : p.stock;
 			stockCell =
 				'<td class="jqsw-col-stock">' +
@@ -177,7 +180,10 @@
 
 			actionCell =
 				'<td class="jqsw-col-actions">' +
-					'<button type="button" class="button button-small jqsw-disable-management" data-product-id="' + p.id + '">' + escapeHtml(S.disableManagement) + '</button>' +
+					'<label class="jqsw-track-toggle">' +
+						'<input type="checkbox" class="jqsw-toggle-management" data-product-id="' + p.id + '" checked> ' +
+						escapeHtml(S.trackStock) +
+					'</label>' +
 				'</td>';
 		}
 
@@ -427,41 +433,30 @@
 			});
 		});
 
-		// Enable stock management on an untracked product — replace just the row.
-		$(document).on('click', '.jqsw-enable-management', function () {
+		// Track stock toggle — single checkbox that enables or disables stock
+		// management depending on its new state. Per-row replacement, no full
+		// table reload. When enabling, auto-focus the new stock input so the
+		// user can start typing immediately.
+		$(document).on('change', '.jqsw-toggle-management', function () {
 			var productId = $(this).data('product-id');
-			var $btn      = $(this);
-			$btn.prop('disabled', true);
-			apiPost('enable-stock-management', { product_id: productId }).then(function (updated) {
+			var checked   = this.checked;
+			var $cb       = $(this);
+			$cb.prop('disabled', true);
+			var endpoint = checked ? 'enable-stock-management' : 'disable-stock-management';
+			apiPost(endpoint, { product_id: productId }).then(function (updated) {
 				var $row = $('tr[data-product-id="' + productId + '"]').first();
 				$row.replaceWith(renderProductRow(updated));
-				// Focus the new stock input so user can start typing immediately
-				var $newInput = $('tr[data-product-id="' + productId + '"] .jqsw-stock-input').first();
-				if ($newInput.length) { $newInput.focus().select(); }
-				// Brief status feedback
+				if (checked) {
+					var $newInput = $('tr[data-product-id="' + productId + '"] .jqsw-stock-input').first();
+					if ($newInput.length) { $newInput.focus().select(); }
+				}
 				var $status = $('tr[data-product-id="' + productId + '"] .jqsw-status').first();
 				$status.removeClass('jqsw-status-saving jqsw-status-error').addClass('jqsw-status-saved').text(S.saved);
 				setTimeout(function () { $status.text('').removeClass('jqsw-status-saved'); }, 2000);
 			}).catch(function (err) {
-				$btn.prop('disabled', false);
-				alert(err.message);
-			});
-		});
-
-		// Disable stock management on a tracked product — replace just the row.
-		// Keeps the _stock value intact on the server so re-enabling restores it.
-		$(document).on('click', '.jqsw-disable-management', function () {
-			var productId = $(this).data('product-id');
-			var $btn      = $(this);
-			$btn.prop('disabled', true);
-			apiPost('disable-stock-management', { product_id: productId }).then(function (updated) {
-				var $row = $('tr[data-product-id="' + productId + '"]').first();
-				$row.replaceWith(renderProductRow(updated));
-				var $status = $('tr[data-product-id="' + productId + '"] .jqsw-status').first();
-				$status.removeClass('jqsw-status-saving jqsw-status-error').addClass('jqsw-status-saved').text(S.saved);
-				setTimeout(function () { $status.text('').removeClass('jqsw-status-saved'); }, 2000);
-			}).catch(function (err) {
-				$btn.prop('disabled', false);
+				// Roll back the checkbox on failure
+				$cb.prop('checked', !checked);
+				$cb.prop('disabled', false);
 				alert(err.message);
 			});
 		});

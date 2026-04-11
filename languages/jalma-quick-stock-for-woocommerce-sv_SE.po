@@ -37,8 +37,5 @@ msgstr "Produkten är inte en variabel produkt."
 msgid "Stock tracking"
 msgstr "Lagerspårning"
 
-msgid "Start tracking"
-msgstr "Starta spårning"
-
-msgid "Stop tracking"
-msgstr "Stoppa spårning"
+msgid "Track stock"
+msgstr "Spåra lager"

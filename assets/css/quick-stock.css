@@ -124,8 +124,18 @@
 	text-align: left;
 }
 
-.jqsw-col-actions .button-small {
-	min-width: 70px;
+.jqsw-track-toggle {
+	display: inline-flex;
+	align-items: center;
+	font-size: 13px;
+	color: #1d2327;
+	user-select: none;
+	line-height: 1.3;
+	cursor: pointer;
+}
+
+.jqsw-track-toggle input[type="checkbox"] {
+	margin-right: 6px;
 }
 
 .jqsw-stock-input,
