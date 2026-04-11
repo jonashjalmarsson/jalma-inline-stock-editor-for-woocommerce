@@ -10,4 +10,9 @@ dist/
 changelog.md
 readme.md
 trunk/
-assets/
+# Only exclude wp.org-specific assets (banner/icon/screenshots), not the
+# runtime JS/CSS that ship with the plugin.
+assets/banner-*
+assets/icon-*
+assets/screenshot-*
+assets/*-source.svg

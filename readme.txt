@@ -4,7 +4,7 @@ Tags: woocommerce, stock, inventory, bulk edit, low stock
 Requires at least: 5.0
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 0.1.0
+Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -66,10 +66,21 @@ Not in the free version. A stock adjustment log is planned for the Pro version.
 
 == Changelog ==
 
-= 0.1.0 =
-* Initial scaffold.
+= 1.0.0 =
+* Initial release.
+* Single-table view of all products with inline-editable stock and low-stock threshold.
+* Category filter with hierarchical dropdown.
+* Stock status filter (in stock, out of stock, on backorder, not tracked).
+* Search by name or SKU.
+* Variable product support with toggle between parent-level and per-variation stock management.
+* Variations expand inline under their parent in per-variation mode.
+* One-click enable for products that have stock management disabled.
+* Auto-save via REST API with visual confirmation per field.
+* Keyboard navigation: Tab between fields, Enter to save and jump to next row.
+* Soft integration with Jalma Category Notifications for WooCommerce.
+* Translation-ready, Swedish (sv_SE) included.
 
 == Upgrade Notice ==
 
-= 0.1.0 =
+= 1.0.0 =
 Initial release.

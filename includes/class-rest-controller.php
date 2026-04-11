@@ -5,13 +5,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * REST controller for Quick Stock updates.
+ * REST controller for Quick Stock.
  *
- * Exposes a single namespace `jalma-quick-stock/v1` with routes for listing
- * products, updating stock/threshold, and toggling variation stock management.
+ * Namespace: jalma-quick-stock/v1
  *
- * All routes require the `manage_woocommerce` capability and CSRF-protected
- * by the default WordPress REST API nonce (X-WP-Nonce header).
+ * Routes:
+ * - GET  /products                  List products with filter/sort/pagination
+ * - GET  /variations/(?P<id>\d+)    List variations of a variable product
+ * - POST /update                    Update stock and/or low_stock_amount for a product or variation
+ * - POST /toggle-variation-stock    Flip a variable product between parent-level and per-variation stock management
+ * - POST /enable-stock-management   Enable _manage_stock on a product that currently has it disabled
+ *
+ * All routes require `manage_woocommerce` capability and the default WP REST
+ * nonce (X-WP-Nonce header). Nonce is supplied from wp_localize_script.
  */
 class JQSW_Rest_Controller {
 
@@ -27,11 +33,22 @@ class JQSW_Rest_Controller {
 			'callback'            => [ $this, 'list_products' ],
 			'permission_callback' => [ $this, 'check_permission' ],
 			'args'                => [
-				'page'       => [ 'default' => 1, 'sanitize_callback' => 'absint' ],
-				'per_page'   => [ 'default' => 50, 'sanitize_callback' => 'absint' ],
-				'search'     => [ 'default' => '', 'sanitize_callback' => 'sanitize_text_field' ],
-				'category'   => [ 'default' => 0, 'sanitize_callback' => 'absint' ],
+				'page'         => [ 'default' => 1, 'sanitize_callback' => 'absint' ],
+				'per_page'     => [ 'default' => 50, 'sanitize_callback' => 'absint' ],
+				'search'       => [ 'default' => '', 'sanitize_callback' => 'sanitize_text_field' ],
+				'category'     => [ 'default' => 0, 'sanitize_callback' => 'absint' ],
 				'stock_status' => [ 'default' => '', 'sanitize_callback' => 'sanitize_text_field' ],
+				'orderby'      => [ 'default' => 'title', 'sanitize_callback' => 'sanitize_text_field' ],
+				'order'        => [ 'default' => 'asc', 'sanitize_callback' => 'sanitize_text_field' ],
+			],
+		] );
+
+		register_rest_route( self::NAMESPACE_ROOT, '/variations/(?P<id>\d+)', [
+			'methods'             => 'GET',
+			'callback'            => [ $this, 'list_variations' ],
+			'permission_callback' => [ $this, 'check_permission' ],
+			'args'                => [
+				'id' => [ 'required' => true, 'sanitize_callback' => 'absint' ],
 			],
 		] );
 
@@ -51,7 +68,7 @@ class JQSW_Rest_Controller {
 			'callback'            => [ $this, 'toggle_variation_stock' ],
 			'permission_callback' => [ $this, 'check_permission' ],
 			'args'                => [
-				'product_id'        => [ 'required' => true, 'sanitize_callback' => 'absint' ],
+				'product_id'           => [ 'required' => true, 'sanitize_callback' => 'absint' ],
 				'manage_per_variation' => [ 'required' => true, 'sanitize_callback' => 'rest_sanitize_boolean' ],
 			],
 		] );
@@ -78,17 +95,120 @@ class JQSW_Rest_Controller {
 	}
 
 	/**
-	 * List products for the table. Returns minimal fields needed for the UI.
-	 * Variations are NOT returned inline — they're fetched on demand when
-	 * a variable product is expanded. Keeps the initial payload small.
+	 * List products for the table.
+	 *
+	 * Returns top-level products only (simple + variable). Variations are
+	 * fetched on demand via /variations/<id>.
 	 */
 	public function list_products( $request ) {
-		// Placeholder — full implementation in the next iteration.
+		$args = [
+			'post_type'      => 'product',
+			'post_status'    => 'publish',
+			'posts_per_page' => (int) $request['per_page'],
+			'paged'          => max( 1, (int) $request['page'] ),
+			'orderby'        => 'title',
+			'order'          => strtoupper( $request['order'] ) === 'DESC' ? 'DESC' : 'ASC',
+		];
+
+		// Order-by aliases
+		switch ( $request['orderby'] ) {
+			case 'sku':
+				$args['orderby']  = 'meta_value';
+				$args['meta_key'] = '_sku';
+				break;
+			case 'stock':
+				$args['orderby']  = 'meta_value_num';
+				$args['meta_key'] = '_stock';
+				break;
+			case 'modified':
+				$args['orderby'] = 'modified';
+				break;
+			case 'title':
+			default:
+				$args['orderby'] = 'title';
+		}
+
+		// Search on title and SKU
+		if ( ! empty( $request['search'] ) ) {
+			$args['s'] = $request['search'];
+			// wc_product_sku_search is injected via WP filter when WC is loaded,
+			// so a plain ?s= hits both title and SKU.
+		}
+
+		// Category filter
+		if ( ! empty( $request['category'] ) ) {
+			$args['tax_query'] = [
+				[
+					'taxonomy'         => 'product_cat',
+					'field'            => 'term_id',
+					'terms'            => [ (int) $request['category'] ],
+					'include_children' => true,
+				],
+			];
+		}
+
+		// Stock status filter
+		if ( ! empty( $request['stock_status'] ) ) {
+			$status = $request['stock_status'];
+			if ( in_array( $status, [ 'instock', 'outofstock', 'onbackorder' ], true ) ) {
+				$args['meta_query'][] = [
+					'key'   => '_stock_status',
+					'value' => $status,
+				];
+			} elseif ( $status === 'notmanaged' ) {
+				$args['meta_query'][] = [
+					'relation' => 'OR',
+					[
+						'key'     => '_manage_stock',
+						'value'   => 'yes',
+						'compare' => '!=',
+					],
+					[
+						'key'     => '_manage_stock',
+						'compare' => 'NOT EXISTS',
+					],
+				];
+			}
+		}
+
+		$query    = new WP_Query( $args );
+		$products = [];
+
+		foreach ( $query->posts as $post ) {
+			$product = wc_get_product( $post->ID );
+			if ( ! $product ) {
+				continue;
+			}
+			$products[] = $this->product_to_array( $product );
+		}
+
 		return rest_ensure_response( [
-			'products' => [],
-			'total'    => 0,
-			'page'     => $request['page'],
-			'per_page' => $request['per_page'],
+			'products' => $products,
+			'total'    => (int) $query->found_posts,
+			'pages'    => (int) $query->max_num_pages,
+			'page'     => (int) $args['paged'],
+			'per_page' => (int) $args['posts_per_page'],
+		] );
+	}
+
+	public function list_variations( $request ) {
+		$parent = wc_get_product( (int) $request['id'] );
+		if ( ! $parent || ! $parent->is_type( 'variable' ) ) {
+			return new WP_Error( 'jqsw_not_variable', __( 'Product is not a variable product.', 'jalma-quick-stock-for-woocommerce' ), [ 'status' => 400 ] );
+		}
+
+		$variations = [];
+		foreach ( $parent->get_children() as $variation_id ) {
+			$variation = wc_get_product( $variation_id );
+			if ( ! $variation ) {
+				continue;
+			}
+			$variations[] = $this->product_to_array( $variation );
+		}
+
+		return rest_ensure_response( [
+			'parent_id'  => (int) $request['id'],
+			'variations' => $variations,
 		] );
 	}
 
@@ -103,29 +223,24 @@ class JQSW_Rest_Controller {
 		$stock            = $request->get_param( 'stock' );
 		$low_stock_amount = $request->get_param( 'low_stock_amount' );
 
-		if ( $stock !== null ) {
+		if ( $request->has_param( 'stock' ) && $stock !== null ) {
 			$product->set_stock_quantity( $stock );
 		}
 
 		if ( $request->has_param( 'low_stock_amount' ) ) {
-			// null → clear override (fall back to global)
+			// null → clear override (fall back to global default)
 			$product->set_low_stock_amount( $low_stock_amount === null ? '' : $low_stock_amount );
 		}
 
 		$product->save();
 
-		return rest_ensure_response( [
-			'product_id'       => $product_id,
-			'stock'            => $product->get_stock_quantity(),
-			'low_stock_amount' => $product->get_low_stock_amount(),
-			'stock_status'     => $product->get_stock_status(),
-		] );
+		return rest_ensure_response( $this->product_to_array( $product ) );
 	}
 
 	public function toggle_variation_stock( $request ) {
-		$product_id = $request['product_id'];
+		$product_id           = $request['product_id'];
 		$manage_per_variation = $request['manage_per_variation'];
-		$parent = wc_get_product( $product_id );
+		$parent               = wc_get_product( $product_id );
 
 		if ( ! $parent || ! $parent->is_type( 'variable' ) ) {
 			return new WP_Error( 'jqsw_not_variable', __( 'Product is not a variable product.', 'jalma-quick-stock-for-woocommerce' ), [ 'status' => 400 ] );
@@ -139,6 +254,9 @@ class JQSW_Rest_Controller {
 				$variation = wc_get_product( $variation_id );
 				if ( $variation ) {
 					$variation->set_manage_stock( true );
+					if ( $variation->get_stock_quantity() === null ) {
+						$variation->set_stock_quantity( 0 );
+					}
 					$variation->save();
 				}
 			}
@@ -152,13 +270,13 @@ class JQSW_Rest_Controller {
 				}
 			}
 			$parent->set_manage_stock( true );
+			if ( $parent->get_stock_quantity() === null ) {
+				$parent->set_stock_quantity( 0 );
+			}
 			$parent->save();
 		}
 
-		return rest_ensure_response( [
-			'product_id'           => $product_id,
-			'manage_per_variation' => $manage_per_variation,
-		] );
+		return rest_ensure_response( $this->product_to_array( $parent ) );
 	}
 
 	public function enable_stock_management( $request ) {
@@ -175,10 +293,48 @@ class JQSW_Rest_Controller {
 		}
 		$product->save();
 
-		return rest_ensure_response( [
-			'product_id'   => $product_id,
-			'manage_stock' => true,
-			'stock'        => $product->get_stock_quantity(),
-		] );
+		return rest_ensure_response( $this->product_to_array( $product ) );
+	}
+
+	/**
+	 * Serialize a WC_Product (or WC_Product_Variation) to the shape expected
+	 * by the JS table renderer. Kept private to avoid confusion with
+	 * wc_rest_prepare_product_for_response (which is a much heavier payload).
+	 */
+	private function product_to_array( $product ) {
+		$thumbnail_id = $product->get_image_id();
+		$thumbnail    = $thumbnail_id ? wp_get_attachment_image_url( $thumbnail_id, [ 40, 40 ] ) : '';
+		// For variations without their own image, fall back to parent's.
+		if ( ! $thumbnail && $product->is_type( 'variation' ) ) {
+			$parent = wc_get_product( $product->get_parent_id() );
+			if ( $parent ) {
+				$parent_thumb = $parent->get_image_id();
+				if ( $parent_thumb ) {
+					$thumbnail = wp_get_attachment_image_url( $parent_thumb, [ 40, 40 ] );
+				}
+			}
+		}
+
+		$low_stock = $product->get_low_stock_amount();
+		// WC returns '' for unset overrides; normalize to null for JSON clarity.
+		$low_stock_normalized = ( $low_stock === '' || $low_stock === null ) ? null : (int) $low_stock;
+
+		return [
+			'id'                    => $product->get_id(),
+			'title'                 => $product->is_type( 'variation' ) ? $product->get_name() : $product->get_title(),
+			'sku'                   => $product->get_sku(),
+			'type'                  => $product->get_type(),
+			'parent_id'             => $product->is_type( 'variation' ) ? $product->get_parent_id() : 0,
+			'thumbnail'             => $thumbnail,
+			'manage_stock'          => (bool) $product->get_manage_stock(),
+			'stock'                 => $product->get_stock_quantity(),
+			'low_stock_amount'      => $low_stock_normalized,
+			'stock_status'          => $product->get_stock_status(),
+			'edit_url'              => $product->is_type( 'variation' )
+				? get_edit_post_link( $product->get_parent_id(), '' )
+				: get_edit_post_link( $product->get_id(), '' ),
+			'variation_count'       => $product->is_type( 'variable' ) ? count( $product->get_children() ) : 0,
+			'manage_per_variation'  => $product->is_type( 'variable' ) ? ( ! $product->get_manage_stock() ) : false,
+		];
 	}
 }
