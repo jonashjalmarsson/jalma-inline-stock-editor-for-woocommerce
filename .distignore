@@ -3,6 +3,7 @@
 .vscode/
 .claude/
 .DS_Store
+.distignore
 RELEASE-CHECKLIST.md
 bin/
 .dist/
@@ -10,9 +11,7 @@ dist/
 changelog.md
 readme.md
 trunk/
-# Only exclude wp.org-specific assets (banner/icon/screenshots), not the
-# runtime JS/CSS that ship with the plugin.
-assets/banner-*
-assets/icon-*
-assets/screenshot-*
-assets/*-source.svg
+# wp.org-specific assets (banner/icon/screenshots) live in assets/ and are
+# synced separately to the SVN /assets/ folder on wp.org — they must NOT be
+# bundled in the plugin zip. Runtime JS/CSS lives in admin/ which does ship.
+assets/

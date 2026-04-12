@@ -32,14 +32,14 @@ class JQSW_Admin_Page {
 
 		wp_enqueue_style(
 			'jqsw-admin',
-			JQSW_URL . 'assets/css/quick-stock.css',
+			JQSW_URL . 'admin/css/quick-stock.css',
 			[],
 			JQSW_VERSION
 		);
 
 		wp_enqueue_script(
 			'jqsw-admin',
-			JQSW_URL . 'assets/js/quick-stock.js',
+			JQSW_URL . 'admin/js/quick-stock.js',
 			[ 'jquery', 'wc-enhanced-select' ],
 			JQSW_VERSION,
 			true
