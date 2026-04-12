@@ -1,5 +1,5 @@
 === Jalma Quick Stock for WooCommerce ===
-Contributors: jeventab
+Contributors: jonashjalmarsson
 Tags: woocommerce, stock, inventory, bulk edit, low stock
 Requires at least: 5.0
 Tested up to: 6.9
