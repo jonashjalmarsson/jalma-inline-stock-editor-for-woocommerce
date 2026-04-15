@@ -61,6 +61,7 @@ class JQSW_Admin_Page {
 				'product'            => __( 'Product', 'jalma-quick-stock-for-woocommerce' ),
 				'stock'              => __( 'Stock', 'jalma-quick-stock-for-woocommerce' ),
 				'lowStockThreshold'  => __( 'Low stock threshold', 'jalma-quick-stock-for-woocommerce' ),
+				/* translators: %d: the global low-stock threshold from WooCommerce settings */
 				'globalHint'         => __( '%d (global)', 'jalma-quick-stock-for-woocommerce' ),
 				'loading'            => __( 'Loading products…', 'jalma-quick-stock-for-woocommerce' ),
 				'noResults'          => __( 'No products match your filters.', 'jalma-quick-stock-for-woocommerce' ),
@@ -71,6 +72,7 @@ class JQSW_Admin_Page {
 				'managePerVariation' => __( 'Manage stock per variation', 'jalma-quick-stock-for-woocommerce' ),
 				'prevPage'           => __( '‹ Previous', 'jalma-quick-stock-for-woocommerce' ),
 				'nextPage'           => __( 'Next ›', 'jalma-quick-stock-for-woocommerce' ),
+				/* translators: 1: current page number, 2: total page count, 3: total product count */
 				'pageOf'             => __( 'Page %1$d of %2$d (%3$d products)', 'jalma-quick-stock-for-woocommerce' ),
 				'saving'             => __( 'Saving…', 'jalma-quick-stock-for-woocommerce' ),
 				'saved'              => __( 'Saved', 'jalma-quick-stock-for-woocommerce' ),

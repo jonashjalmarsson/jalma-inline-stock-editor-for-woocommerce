@@ -3,10 +3,11 @@
  * Plugin Name: Jalma Quick Stock for WooCommerce
  * Plugin URI:
  * Description: Edit WooCommerce stock quantities and low-stock thresholds directly from a single table — no more clicking into each product. Inline edit, keyboard navigation, category filter, full variation support.
- * Version: 1.0.6
+ * Version: 1.1.0
  * Author: jonashjalmarsson
  * Author URI: https://jonashjalmarsson.se
- * License: GPLv3
+ * License: GPLv2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Requires Plugins: woocommerce
  * Text Domain: jalma-quick-stock-for-woocommerce
  */
@@ -32,12 +33,13 @@ add_action( 'before_woocommerce_init', function () {
 	}
 } );
 
-define( 'JQSW_VERSION', '1.0.6' );
+define( 'JQSW_VERSION', '1.1.0' );
 define( 'JQSW_SLUG', 'jalma-quick-stock-for-woocommerce' );
 define( 'JQSW_PATH', plugin_dir_path( __FILE__ ) );
 define( 'JQSW_URL', plugin_dir_url( __FILE__ ) );
 
-/* jhwpl — self-hosted update checker */
+/* @wporg-strip-start */
+/* jhwpl — self-hosted update checker (stripped from wp.org build) */
 require_once JQSW_PATH . 'jhwpl/update_checker.php';
 new \JHWPL\UpdateChecker( [
 	'version'       => JQSW_VERSION,
@@ -46,10 +48,7 @@ new \JHWPL\UpdateChecker( [
 	'slug'          => JQSW_SLUG,
 	'info_url'      => 'https://plugins.jonashjalmarsson.se/jalma-quick-stock-for-woocommerce/info.json',
 ] );
-
-add_action( 'init', function () {
-	load_plugin_textdomain( 'jalma-quick-stock-for-woocommerce', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
-} );
+/* @wporg-strip-end */
 
 add_action( 'plugins_loaded', function () {
 	if ( ! class_exists( 'WooCommerce' ) ) {

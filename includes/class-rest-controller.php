@@ -138,15 +138,16 @@ class JQSW_Rest_Controller {
 			'order'          => strtoupper( $request['order'] ) === 'DESC' ? 'DESC' : 'ASC',
 		];
 
-		// Order-by aliases
+		// Order-by aliases. meta_key lookups are unavoidable here — WC stores
+		// stock and SKU in postmeta, so any stock editor must sort on them.
 		switch ( $request['orderby'] ) {
 			case 'sku':
 				$args['orderby']  = 'meta_value';
-				$args['meta_key'] = '_sku';
+				$args['meta_key'] = '_sku'; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
 				break;
 			case 'stock':
 				$args['orderby']  = 'meta_value_num';
-				$args['meta_key'] = '_stock';
+				$args['meta_key'] = '_stock'; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
 				break;
 			case 'modified':
 				$args['orderby'] = 'modified';
@@ -163,8 +164,10 @@ class JQSW_Rest_Controller {
 			// so a plain ?s= hits both title and SKU.
 		}
 
-		// Category filter
+		// Category filter. A tax_query is the correct tool here — users expect
+		// to filter products by product_cat, and this is how WC itself does it.
 		if ( ! empty( $request['category'] ) ) {
+			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 			$args['tax_query'] = [
 				[
 					'taxonomy'         => 'product_cat',

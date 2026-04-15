@@ -4,7 +4,7 @@ Tags: woocommerce, stock, inventory, bulk edit, low stock
 Requires at least: 5.0
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.0.6
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -66,6 +66,11 @@ Not in the free version. A stock adjustment log is planned for the Pro version.
 
 == Changelog ==
 
+= 1.1.0 =
+* i18n: added translator comments on strings with placeholders for cleaner PO files.
+* Housekeeping: removed redundant `load_plugin_textdomain()` call — wp.org auto-loads translations for hosted plugins since WordPress 4.6.
+* License header aligned to GPLv2 or later for wp.org compliance.
+
 = 1.0.6 =
 * Housekeeping: moved admin runtime JavaScript and CSS from `assets/js/` and `assets/css/` to `admin/js/` and `admin/css/`. Keeps the `assets/` folder reserved for WordPress.org listing material (banner, icon, screenshots) so the plugin zip doesn't ship unnecessary bytes. No user-visible changes.
 
@@ -101,6 +106,9 @@ Not in the free version. A stock adjustment log is planned for the Pro version.
 * Translation-ready, Swedish (sv_SE) included.
 
 == Upgrade Notice ==
+
+= 1.1.0 =
+Translator comments, removed redundant textdomain loader, license aligned to GPLv2 or later.
 
 = 1.0.4 =
 Stock tracking toggle is now a single checkbox instead of two button variants.
