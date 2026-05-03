@@ -73,4 +73,32 @@ add_action( 'plugins_loaded', function () {
 	new JQSW_Integrations();
 } );
 
-// TODO: wire JHLSQ\Purchase auto-install + Get Pro upsell once the QS Pro LemonSqueezy product is created. Mirror the pattern in really-simple-under-construction.php and jalma-category-notifications-for-woocommerce.php.
+/*
+ * PRO upsell + auto-install flow lives in the reusable JHLSQ\Purchase
+ * module bundled at jhlsq-purchase/. Loaded late (admin_init) so the
+ * Free plugin's settings page hook + the WooCommerce menu have already
+ * been registered.
+ */
+require_once JQSW_PATH . 'jhlsq-purchase/jhlsq-purchase.php';
+
+add_action( 'admin_init', function () {
+	if ( ! class_exists( '\\JHLSQ\\Purchase' ) ) {
+		return;
+	}
+	new \JHLSQ\Purchase( [
+		'free_basename'        => 'jalma-quick-stock-for-woocommerce/jalma-quick-stock-for-woocommerce.php',
+		'pro_basename'         => 'jalma-quick-stock-for-woocommerce-pro/jalma-quick-stock-for-woocommerce-pro.php',
+		'pro_class_check'      => 'JQSWP\\Tabs',
+		'pro_label'            => 'Quick Stock for WooCommerce PRO',
+		'checkout_url'         => 'https://pay.jonashjalmarsson.se/checkout/buy/03c85738-f8d1-40ef-ae72-046503763ecb',
+		'download_url'         => 'https://plugins.jonashjalmarsson.se/jalma-quick-stock-for-woocommerce-pro/jalma-quick-stock-for-woocommerce-pro.zip',
+		'bridge_base'          => 'https://jonashjalmarsson.se/wp-json/lsq-bridge/v1',
+		'license_option'       => 'lsq_jalma-quick-stock-for-woocommerce-pro',
+		'license_page_url'     => admin_url( 'admin.php?page=jqswp-license' ),
+		'settings_page_hook'   => 'woocommerce_page_jqsw-quick-stock',
+		'after_heading_action' => 'jqsw_before_filters',
+		'pitch_text'           => 'CSV export and import for product stock data — filter by category, include variations, two-step preview-before-apply flow',
+		'landing_page_url'     => 'https://jonashjalmarsson.se/plugins/jalma-quick-stock-for-woocommerce-pro/',
+		'install_action_name'  => 'jqsw_install_pro',
+	] );
+} );
