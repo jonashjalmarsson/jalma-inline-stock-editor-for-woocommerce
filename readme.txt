@@ -1,4 +1,4 @@
-=== Jalma Quick Stock for WooCommerce ===
+=== Quick Stock for WooCommerce ===
 Contributors: jonashjalmarsson
 Tags: woocommerce, stock, inventory, bulk edit, low stock
 Requires at least: 5.0
@@ -12,7 +12,7 @@ Edit WooCommerce stock quantities and low-stock thresholds from a single table �
 
 == Description ==
 
-**Jalma Quick Stock for WooCommerce** replaces WooCommerce's per-product click-fest with a single table where you can update stock quantities and low-stock thresholds for all your products at once. Inline edit, keyboard navigation, category filter, variation support.
+**Quick Stock for WooCommerce** replaces WooCommerce's per-product click-fest with a single table where you can update stock quantities and low-stock thresholds for all your products at once. Inline edit, keyboard navigation, category filter, variation support.
 
 Ideal for shops that do weekly inventory counts, quick post-delivery updates, manual adjustments, or stock management for hundreds of products.
 
@@ -37,7 +37,7 @@ Ideal for shops that do weekly inventory counts, quick post-delivery updates, ma
 == Installation ==
 
 1. Upload the plugin folder to `/wp-content/plugins/`, or install via the **Plugins → Add New** screen.
-2. Activate **Jalma Quick Stock for WooCommerce** through the **Plugins** menu.
+2. Activate **Quick Stock for WooCommerce** through the **Plugins** menu.
 3. Go to **WooCommerce → Quick Stock** to start editing.
 
 == Frequently Asked Questions ==
@@ -52,7 +52,7 @@ Variable products can manage stock at the parent level (one shared value for all
 
 = Does it work with any stock notification plugin? =
 
-Yes. Quick Stock calls WooCommerce's standard stock-update methods, which fire the `woocommerce_low_stock` and `woocommerce_no_stock` actions. Any plugin listening to those — including **Jalma Category Notifications for WooCommerce** — receives the events as usual.
+Yes. Quick Stock calls WooCommerce's standard stock-update methods, which fire the `woocommerce_low_stock` and `woocommerce_no_stock` actions. Any plugin listening to those — including **Category Notifications for WooCommerce** — receives the events as usual.
 
 = Does it track stock adjustment history? =
 
@@ -102,7 +102,7 @@ Not in the free version. A stock adjustment log is planned for the Pro version.
 * One-click enable for products that have stock management disabled.
 * Auto-save via REST API with visual confirmation per field.
 * Keyboard navigation: Tab between fields, Enter to save and jump to next row.
-* Soft integration with Jalma Category Notifications for WooCommerce.
+* Soft integration with Category Notifications for WooCommerce.
 * Translation-ready, Swedish (sv_SE) included.
 
 == Upgrade Notice ==

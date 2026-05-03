@@ -1,5 +1,5 @@
 /**
- * Jalma Quick Stock for WooCommerce — admin table
+ * Quick Stock for WooCommerce — admin table
  *
  * Provides inline edit + auto-save for WC stock quantities and low-stock
  * thresholds. Fetches paginated products from the plugin's REST API,

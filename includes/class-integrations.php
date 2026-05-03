@@ -7,8 +7,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Soft integration points with other Jalma plugins.
  *
- * This class adds lightweight cross-promotion links between Jalma Quick Stock
- * and Jalma Category Notifications for WooCommerce — with no hard dependencies.
+ * This class adds lightweight cross-promotion links between Quick Stock
+ * and Category Notifications for WooCommerce — with no hard dependencies.
  * If the companion plugin isn't installed, nothing is injected.
  *
  * Policy: show an "also installed" note when both are active, and a "you might
@@ -41,7 +41,7 @@ class JQSW_Integrations {
 				wp_kses(
 					sprintf(
 						/* translators: %s: URL to Category Notifications settings */
-						__( '💡 You\'re also using <strong>Jalma Category Notifications for WooCommerce</strong> — stock updates you make here will trigger your configured notification rules automatically. <a href="%s">Manage rules</a>.', 'jalma-quick-stock-for-woocommerce' ),
+						__( '💡 You\'re also using <strong>Category Notifications for WooCommerce</strong> — stock updates you make here will trigger your configured notification rules automatically. <a href="%s">Manage rules</a>.', 'jalma-quick-stock-for-woocommerce' ),
 						esc_url( $notifications_url )
 					),
 					[ 'strong' => [], 'a' => [ 'href' => [] ] ]
@@ -52,7 +52,7 @@ class JQSW_Integrations {
 				wp_kses(
 					sprintf(
 						/* translators: %s: URL to wp.org plugin page */
-						__( '💡 Want email alerts for low stock, routed to different recipients per category? Try <strong>Jalma Category Notifications for WooCommerce</strong> — a companion plugin by the same author. <a href="%s" target="_blank" rel="noopener">Learn more</a>.', 'jalma-quick-stock-for-woocommerce' ),
+						__( '💡 Want email alerts for low stock, routed to different recipients per category? Try <strong>Category Notifications for WooCommerce</strong> — a companion plugin by the same author. <a href="%s" target="_blank" rel="noopener">Learn more</a>.', 'jalma-quick-stock-for-woocommerce' ),
 						'https://wordpress.org/plugins/jalma-wc-category-notifications/'
 					),
 					[ 'strong' => [], 'a' => [ 'href' => [], 'target' => [], 'rel' => [] ] ]

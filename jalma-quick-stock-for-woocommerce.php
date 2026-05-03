@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: Jalma Quick Stock for WooCommerce
+ * Plugin Name: Quick Stock for WooCommerce
  * Plugin URI:
  * Description: Edit WooCommerce stock quantities and low-stock thresholds directly from a single table — no more clicking into each product. Inline edit, keyboard navigation, category filter, full variation support.
  * Version: 1.1.0
@@ -57,7 +57,7 @@ add_action( 'plugins_loaded', function () {
 				sprintf(
 					/* translators: %s: plugin name */
 					esc_html__( '%s requires WooCommerce to be active.', 'jalma-quick-stock-for-woocommerce' ),
-					'<strong>Jalma Quick Stock for WooCommerce</strong>'
+					'<strong>Quick Stock for WooCommerce</strong>'
 				) .
 				'</p></div>';
 		} );
@@ -72,3 +72,5 @@ add_action( 'plugins_loaded', function () {
 	new JQSW_Rest_Controller();
 	new JQSW_Integrations();
 } );
+
+// TODO: wire JHLSQ\Purchase auto-install + Get Pro upsell once the QS Pro LemonSqueezy product is created. Mirror the pattern in really-simple-under-construction.php and jalma-category-notifications-for-woocommerce.php.
