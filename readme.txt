@@ -4,7 +4,7 @@ Tags: woocommerce, stock, inventory, bulk edit, low stock
 Requires at least: 5.0
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -52,7 +52,7 @@ Variable products can manage stock at the parent level (one shared value for all
 
 = Does it work with any stock notification plugin? =
 
-Yes. Quick Stock calls WooCommerce's standard stock-update methods, which fire the `woocommerce_low_stock` and `woocommerce_no_stock` actions. Any plugin listening to those — including **Category Notifications for WooCommerce** — receives the events as usual.
+Yes. Quick Stock calls WooCommerce's standard stock-update methods, which fire the `woocommerce_low_stock` and `woocommerce_no_stock` actions. Any plugin listening to those receives the events as usual.
 
 = Does it track stock adjustment history? =
 
@@ -65,6 +65,10 @@ Not in the free version. A stock adjustment log is planned for the Pro version.
 3. Category filter and search.
 
 == Changelog ==
+
+= 1.1.1 =
+* Removed the cross-promotion `admin_notices` hook on the settings page (Guideline 11). The "you might also like Category Notifications for WooCommerce" suggestion was advertising another plugin from inside the admin dashboard, which the wp.org guidelines discourage even when scoped to the plugin's own settings screen.
+* PRO upsell card on the settings page no longer borrows WordPress core's `notice notice-info` classes; it now renders as a self-styled card with a small "Pro upgrade" pill so it's visually distinct from a system message.
 
 = 1.1.0 =
 * i18n: added translator comments on strings with placeholders for cleaner PO files.

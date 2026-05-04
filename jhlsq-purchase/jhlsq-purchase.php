@@ -104,7 +104,7 @@ class Purchase {
 		if ( $this->pro_active() ) {
 			return $links;
 		}
-		$pro_link = '<a href="' . esc_url( $this->config['checkout_url'] ) . '" target="_blank" rel="noopener" style="color:#3858e9;font-weight:600;">'
+		$pro_link = '<a href="' . esc_url( $this->config['checkout_url'] ) . '" target="_blank" rel="noopener">'
 			. esc_html( $this->s( 'get_pro_link', 'Get Pro' ) )
 			. '</a>';
 		array_push( $links, $pro_link );
@@ -154,8 +154,9 @@ class Purchase {
 			'activate' => $this->s( 'err_activate', 'License activation failed. Please try again or contact support.' ),
 		];
 		?>
-		<div id="jhlsq-pro-upsell" class="notice notice-info inline" style="border-left-color:#3858e9;padding:.9em 1.1em;margin:.4em 0 1.2em;max-width:760px;">
-			<p style="margin:0 0 .6em;"><?php echo esc_html( $this->s( 'pitch' ) ); ?></p>
+		<div id="jhlsq-pro-upsell" class="jhlsq-pro-upsell" style="background:#f5f7ff;border:1px solid #d6dffd;border-radius:6px;padding:1em 1.25em;margin:1em 0 1.5em;max-width:760px;">
+			<span style="display:inline-block;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#3858e9;background:#e7ecfb;padding:.15em .55em;border-radius:3px;margin-bottom:.6em;"><?php echo esc_html( $this->s( 'upsell_label', 'Pro upgrade' ) ); ?></span>
+			<p style="margin:.2em 0 .6em;"><?php echo esc_html( $this->s( 'pitch' ) ); ?></p>
 			<p style="margin:0 0 .6em;">
 				<a class="lemonsqueezy-button button button-primary" href="<?php echo esc_url( $this->config['checkout_url'] ); ?>" target="_blank" rel="noopener">
 					<?php echo esc_html( $this->s( 'get_pro_button', 'Get PRO →' ) ); ?>

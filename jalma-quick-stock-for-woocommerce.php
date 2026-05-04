@@ -3,7 +3,7 @@
  * Plugin Name: Quick Stock for WooCommerce
  * Plugin URI:
  * Description: Edit WooCommerce stock quantities and low-stock thresholds directly from a single table — no more clicking into each product. Inline edit, keyboard navigation, category filter, full variation support.
- * Version: 1.1.0
+ * Version: 1.1.1
  * Author: jonashjalmarsson
  * Author URI: https://jonashjalmarsson.se
  * License: GPLv2 or later
@@ -33,7 +33,7 @@ add_action( 'before_woocommerce_init', function () {
 	}
 } );
 
-define( 'JQSW_VERSION', '1.1.0' );
+define( 'JQSW_VERSION', '1.1.1' );
 define( 'JQSW_SLUG', 'jalma-quick-stock-for-woocommerce' );
 define( 'JQSW_PATH', plugin_dir_path( __FILE__ ) );
 define( 'JQSW_URL', plugin_dir_url( __FILE__ ) );
@@ -66,11 +66,9 @@ add_action( 'plugins_loaded', function () {
 
 	require_once JQSW_PATH . 'includes/class-admin-page.php';
 	require_once JQSW_PATH . 'includes/class-rest-controller.php';
-	require_once JQSW_PATH . 'includes/class-integrations.php';
 
 	new JQSW_Admin_Page();
 	new JQSW_Rest_Controller();
-	new JQSW_Integrations();
 } );
 
 /*
