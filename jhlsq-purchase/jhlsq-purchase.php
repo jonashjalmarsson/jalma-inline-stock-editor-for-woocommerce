@@ -154,38 +154,82 @@ class Purchase {
 			'activate' => $this->s( 'err_activate', 'License activation failed. Please try again or contact support.' ),
 		];
 		?>
-		<div id="jhlsq-pro-upsell" class="jhlsq-pro-upsell" style="background:#f5f7ff;border:1px solid #d6dffd;border-radius:6px;padding:1em 1.25em;margin:1em 0 1.5em;max-width:760px;">
-			<span style="display:inline-block;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#3858e9;background:#e7ecfb;padding:.15em .55em;border-radius:3px;margin-bottom:.6em;"><?php echo esc_html( $this->s( 'upsell_label', 'Pro upgrade' ) ); ?></span>
-			<p style="margin:.2em 0 .6em;"><?php echo esc_html( $this->config['pitch_text'] ?? $this->s( 'pitch' ) ); ?></p>
-			<p style="margin:0 0 .6em;">
-				<a class="lemonsqueezy-button button button-primary" href="<?php echo esc_url( $this->config['checkout_url'] ); ?>" target="_blank" rel="noopener">
-					<?php echo esc_html( $this->s( 'get_pro_button', 'Get PRO →' ) ); ?>
-				</a>
-				<?php if ( ! empty( $this->config['landing_page_url'] ) ) : ?>
-					<a href="<?php echo esc_url( $this->config['landing_page_url'] ); ?>" target="_blank" rel="noopener" style="margin-left:1em;">
-						<?php echo esc_html( $this->config['landing_link_text'] ); ?>
+		<div id="jhlsq-pro-upsell" class="jhlsq-pro-upsell" style="position:relative;background:#f5f7ff;border:1px solid #d6dffd;border-radius:6px;padding:1em 1.25em;margin:1em 0 1.5em;max-width:760px;">
+			<button type="button" id="jhlsq-pro-collapse" aria-label="<?php echo esc_attr( $this->s( 'collapse_label', 'Hide' ) ); ?>" title="<?php echo esc_attr( $this->s( 'collapse_label', 'Hide' ) ); ?>" style="position:absolute;top:.4em;right:.55em;background:none;border:none;font-size:18px;line-height:1;cursor:pointer;color:#94a3c8;padding:.1em .35em;">×</button>
+			<span id="jhlsq-pro-pill" style="display:inline-block;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#3858e9;background:#e7ecfb;padding:.15em .55em;border-radius:3px;margin-bottom:.6em;"><?php echo esc_html( $this->s( 'upsell_label', 'Pro upgrade' ) ); ?></span>
+			<div id="jhlsq-pro-content">
+				<p style="margin:.2em 0 .6em;"><?php echo esc_html( $this->config['pitch_text'] ?? $this->s( 'pitch' ) ); ?></p>
+				<p style="margin:0 0 .6em;">
+					<a class="lemonsqueezy-button button button-primary" href="<?php echo esc_url( $this->config['checkout_url'] ); ?>" target="_blank" rel="noopener">
+						<?php echo esc_html( $this->s( 'get_pro_button', 'Get PRO →' ) ); ?>
 					</a>
-				<?php endif; ?>
-				<?php if ( '' !== $error && isset( $error_messages[ $error ] ) ) : ?>
-					<span style="color:#d63638;margin-left:1em;"><?php echo esc_html( $error_messages[ $error ] ); ?></span>
-				<?php endif; ?>
-			</p>
-			<p id="jhlsq-pro-status" hidden style="margin:0 0 .6em;"></p>
-			<details id="jhlsq-pro-paste" style="margin-top:.4em;">
-				<summary style="cursor:pointer;color:#3858e9;font-size:.95em;"><?php echo esc_html( $this->s( 'paste_summary', 'Already have a license key? Paste it here' ) ); ?></summary>
-				<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin-top:.6em;display:flex;gap:.5em;flex-wrap:wrap;">
-					<input type="hidden" name="action" value="<?php echo esc_attr( $this->config['install_action_name'] ); ?>" />
-					<?php wp_nonce_field( $this->config['install_action_name'], 'jhlsq_nonce' ); ?>
-					<input type="text" name="license_key" id="jhlsq-license-key-input" required placeholder="<?php echo esc_attr( $this->s( 'paste_placeholder', 'License key from your purchase email' ) ); ?>" style="flex:1;min-width:280px;" />
-					<button type="submit" class="button button-primary"><?php echo esc_html( $this->s( 'install_button', 'Install PRO' ) ); ?></button>
-				</form>
-			</details>
+					<?php if ( ! empty( $this->config['landing_page_url'] ) ) : ?>
+						<a href="<?php echo esc_url( $this->config['landing_page_url'] ); ?>" target="_blank" rel="noopener" style="margin-left:1em;">
+							<?php echo esc_html( $this->config['landing_link_text'] ); ?>
+						</a>
+					<?php endif; ?>
+					<?php if ( '' !== $error && isset( $error_messages[ $error ] ) ) : ?>
+						<span style="color:#d63638;margin-left:1em;"><?php echo esc_html( $error_messages[ $error ] ); ?></span>
+					<?php endif; ?>
+				</p>
+				<p id="jhlsq-pro-status" hidden style="margin:0 0 .6em;"></p>
+				<details id="jhlsq-pro-paste" style="margin-top:.4em;">
+					<summary style="cursor:pointer;color:#3858e9;font-size:.95em;"><?php echo esc_html( $this->s( 'paste_summary', 'Already have a license key? Paste it here' ) ); ?></summary>
+					<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin-top:.6em;display:flex;gap:.5em;flex-wrap:wrap;">
+						<input type="hidden" name="action" value="<?php echo esc_attr( $this->config['install_action_name'] ); ?>" />
+						<?php wp_nonce_field( $this->config['install_action_name'], 'jhlsq_nonce' ); ?>
+						<input type="text" name="license_key" id="jhlsq-license-key-input" required placeholder="<?php echo esc_attr( $this->s( 'paste_placeholder', 'License key from your purchase email' ) ); ?>" style="flex:1;min-width:280px;" />
+						<button type="submit" class="button button-primary"><?php echo esc_html( $this->s( 'install_button', 'Install PRO' ) ); ?></button>
+					</form>
+				</details>
+			</div>
 		</div>
 		<script>
 		(function () {
 			var status     = document.getElementById('jhlsq-pro-status');
 			var pasteBlock = document.getElementById('jhlsq-pro-paste');
 			var keyInput   = document.getElementById('jhlsq-license-key-input');
+
+			// Collapse-to-pill behavior, persisted in localStorage. Per-browser by
+			// design — paid-plugin upsells should stay rediscoverable, not
+			// permanently invisible across all sessions.
+			var COLLAPSE_KEY = 'jhlsqProUpsellCollapsed';
+			var card         = document.getElementById('jhlsq-pro-upsell');
+			var collapseBtn  = document.getElementById('jhlsq-pro-collapse');
+			var content      = document.getElementById('jhlsq-pro-content');
+			var pill         = document.getElementById('jhlsq-pro-pill');
+			function setCollapsed(yes) {
+				if (yes) {
+					content.style.display    = 'none';
+					collapseBtn.style.display = 'none';
+					pill.style.cursor        = 'pointer';
+					pill.title               = pill.dataset.expandTitle || '';
+					pill.style.marginBottom  = '0';
+					card.style.padding       = '.5em .85em';
+				} else {
+					content.style.display    = '';
+					collapseBtn.style.display = '';
+					pill.style.cursor        = '';
+					pill.title               = '';
+					pill.style.marginBottom  = '.6em';
+					card.style.padding       = '1em 1.25em';
+				}
+			}
+			pill.dataset.expandTitle = <?php echo wp_json_encode( $this->s( 'expand_label', 'Click to expand' ) ); ?>;
+			try {
+				if (localStorage.getItem(COLLAPSE_KEY) === '1') { setCollapsed(true); }
+			} catch (e) { /* localStorage unavailable in some sandboxed admins */ }
+			collapseBtn.addEventListener('click', function () {
+				setCollapsed(true);
+				try { localStorage.setItem(COLLAPSE_KEY, '1'); } catch (e) {}
+			});
+			pill.addEventListener('click', function () {
+				if (content.style.display === 'none') {
+					setCollapsed(false);
+					try { localStorage.removeItem(COLLAPSE_KEY); } catch (e) {}
+				}
+			});
+
 			var bridgeBase = <?php echo wp_json_encode( $this->config['bridge_base'] ); ?>;
 			var T = {
 				thanks:        <?php echo wp_json_encode( $this->s( 'js_thanks' ) ); ?>,

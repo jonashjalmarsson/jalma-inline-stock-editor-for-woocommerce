@@ -69,6 +69,7 @@ Not in the free version. A stock adjustment log is planned for the Pro version.
 = 1.1.1 =
 * Removed the cross-promotion `admin_notices` hook on the settings page (Guideline 11). The "you might also like Category Notifications for WooCommerce" suggestion was advertising another plugin from inside the admin dashboard, which the wp.org guidelines discourage even when scoped to the plugin's own settings screen.
 * PRO upsell card on the settings page no longer borrows WordPress core's `notice notice-info` classes; it now renders as a self-styled card with a small "Pro upgrade" pill so it's visually distinct from a system message.
+* PRO upsell card is now collapsible — click the × in the corner to shrink it down to just the "Pro upgrade" pill; click the pill to expand it back. State persists per browser via localStorage.
 
 = 1.1.0 =
 * i18n: added translator comments on strings with placeholders for cleaner PO files.
