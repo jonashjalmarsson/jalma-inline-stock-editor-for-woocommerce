@@ -1,10 +1,10 @@
-=== Quick Stock for WooCommerce ===
+=== Jalma Inline Stock Editor for WooCommerce ===
 Contributors: jonashjalmarsson
 Tags: woocommerce, stock, inventory, bulk edit, low stock
 Requires at least: 5.0
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.1.1
+Stable tag: 1.1.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,7 +12,7 @@ Edit WooCommerce stock quantities and low-stock thresholds from a single table �
 
 == Description ==
 
-**Quick Stock for WooCommerce** replaces WooCommerce's per-product click-fest with a single table where you can update stock quantities and low-stock thresholds for all your products at once. Inline edit, keyboard navigation, category filter, variation support.
+**Jalma Inline Stock Editor for WooCommerce** replaces WooCommerce's per-product click-fest with a single table where you can update stock quantities and low-stock thresholds for all your products at once. Inline edit, keyboard navigation, category filter, variation support.
 
 Ideal for shops that do weekly inventory counts, quick post-delivery updates, manual adjustments, or stock management for hundreds of products.
 
@@ -37,7 +37,7 @@ Ideal for shops that do weekly inventory counts, quick post-delivery updates, ma
 == Installation ==
 
 1. Upload the plugin folder to `/wp-content/plugins/`, or install via the **Plugins → Add New** screen.
-2. Activate **Quick Stock for WooCommerce** through the **Plugins** menu.
+2. Activate **Jalma Inline Stock Editor for WooCommerce** through the **Plugins** menu.
 3. Go to **WooCommerce → Quick Stock** to start editing.
 
 == Frequently Asked Questions ==
@@ -52,7 +52,7 @@ Variable products can manage stock at the parent level (one shared value for all
 
 = Does it work with any stock notification plugin? =
 
-Yes. Quick Stock calls WooCommerce's standard stock-update methods, which fire the `woocommerce_low_stock` and `woocommerce_no_stock` actions. Any plugin listening to those receives the events as usual.
+Yes. The plugin calls WooCommerce's standard stock-update methods, which fire the `woocommerce_low_stock` and `woocommerce_no_stock` actions. Any plugin listening to those receives the events as usual.
 
 = Does it track stock adjustment history? =
 
@@ -60,11 +60,14 @@ Not in the free version. A stock adjustment log is planned for the Pro version.
 
 == Screenshots ==
 
-1. Quick Stock table with inline-editable stock and low-stock threshold columns.
+1. Inline stock editor table with editable stock and low-stock threshold columns.
 2. Variable product expanded to show per-variation stock editing.
 3. Category filter and search.
 
 == Changelog ==
+
+= 1.1.2 =
+* Renamed plugin to "Jalma Inline Stock Editor for WooCommerce" per wp.org Plugin Review feedback. New slug `jalma-inline-stock-editor-for-woocommerce`. "Inline" describes the free version's core UX (inline table-cell editing) more accurately than the generic "Quick". No functional change — same code, more distinctive name.
 
 = 1.1.1 =
 * Removed the cross-promotion `admin_notices` hook on the settings page (Guideline 11). The "you might also like Category Notifications for WooCommerce" suggestion was advertising another plugin from inside the admin dashboard, which the wp.org guidelines discourage even when scoped to the plugin's own settings screen.
@@ -111,6 +114,9 @@ Not in the free version. A stock adjustment log is planned for the Pro version.
 * Translation-ready, Swedish (sv_SE) included.
 
 == Upgrade Notice ==
+
+= 1.1.2 =
+Plugin renamed to "Jalma Inline Stock Editor for WooCommerce" per wp.org review feedback. No functional change.
 
 = 1.1.0 =
 Translator comments, removed redundant textdomain loader, license aligned to GPLv2 or later.

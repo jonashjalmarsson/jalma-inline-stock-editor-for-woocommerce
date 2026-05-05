@@ -225,7 +225,7 @@ class JQSW_Rest_Controller {
 	public function list_variations( $request ) {
 		$parent = wc_get_product( (int) $request['id'] );
 		if ( ! $parent || ! $parent->is_type( 'variable' ) ) {
-			return new WP_Error( 'jqsw_not_variable', __( 'Product is not a variable product.', 'jalma-quick-stock-for-woocommerce' ), [ 'status' => 400 ] );
+			return new WP_Error( 'jqsw_not_variable', __( 'Product is not a variable product.', 'jalma-inline-stock-editor-for-woocommerce' ), [ 'status' => 400 ] );
 		}
 
 		$variations = [];
@@ -248,7 +248,7 @@ class JQSW_Rest_Controller {
 		$product    = wc_get_product( $product_id );
 
 		if ( ! $product ) {
-			return new WP_Error( 'jqsw_not_found', __( 'Product not found.', 'jalma-quick-stock-for-woocommerce' ), [ 'status' => 404 ] );
+			return new WP_Error( 'jqsw_not_found', __( 'Product not found.', 'jalma-inline-stock-editor-for-woocommerce' ), [ 'status' => 404 ] );
 		}
 
 		$old_stock     = $product->get_stock_quantity();
@@ -297,7 +297,7 @@ class JQSW_Rest_Controller {
 		$parent               = wc_get_product( $product_id );
 
 		if ( ! $parent || ! $parent->is_type( 'variable' ) ) {
-			return new WP_Error( 'jqsw_not_variable', __( 'Product is not a variable product.', 'jalma-quick-stock-for-woocommerce' ), [ 'status' => 400 ] );
+			return new WP_Error( 'jqsw_not_variable', __( 'Product is not a variable product.', 'jalma-inline-stock-editor-for-woocommerce' ), [ 'status' => 400 ] );
 		}
 
 		if ( $manage_per_variation ) {
@@ -338,7 +338,7 @@ class JQSW_Rest_Controller {
 		$product    = wc_get_product( $product_id );
 
 		if ( ! $product ) {
-			return new WP_Error( 'jqsw_not_found', __( 'Product not found.', 'jalma-quick-stock-for-woocommerce' ), [ 'status' => 404 ] );
+			return new WP_Error( 'jqsw_not_found', __( 'Product not found.', 'jalma-inline-stock-editor-for-woocommerce' ), [ 'status' => 404 ] );
 		}
 
 		$product->set_manage_stock( true );
@@ -355,7 +355,7 @@ class JQSW_Rest_Controller {
 		$product    = wc_get_product( $product_id );
 
 		if ( ! $product ) {
-			return new WP_Error( 'jqsw_not_found', __( 'Product not found.', 'jalma-quick-stock-for-woocommerce' ), [ 'status' => 404 ] );
+			return new WP_Error( 'jqsw_not_found', __( 'Product not found.', 'jalma-inline-stock-editor-for-woocommerce' ), [ 'status' => 404 ] );
 		}
 
 		// Keep the existing _stock value so it can be restored if the user

@@ -14,8 +14,8 @@ class JQSW_Admin_Page {
 	public function add_menu_page() {
 		add_submenu_page(
 			'woocommerce',
-			__( 'Quick Stock', 'jalma-quick-stock-for-woocommerce' ),
-			__( 'Quick Stock', 'jalma-quick-stock-for-woocommerce' ),
+			__( 'Quick Stock', 'jalma-inline-stock-editor-for-woocommerce' ),
+			__( 'Quick Stock', 'jalma-inline-stock-editor-for-woocommerce' ),
 			'manage_woocommerce',
 			'jqsw-quick-stock',
 			[ $this, 'render_page' ]
@@ -51,34 +51,34 @@ class JQSW_Admin_Page {
 			'categories'          => $this->get_hierarchical_categories(),
 			'globalLowStockAmount' => (int) get_option( 'woocommerce_notify_low_stock_amount', 2 ),
 			'strings'             => [
-				'allCategories'      => __( 'All categories', 'jalma-quick-stock-for-woocommerce' ),
-				'anyStatus'          => __( 'Any stock status', 'jalma-quick-stock-for-woocommerce' ),
-				'inStock'            => __( 'In stock', 'jalma-quick-stock-for-woocommerce' ),
-				'outOfStock'         => __( 'Out of stock', 'jalma-quick-stock-for-woocommerce' ),
-				'onBackorder'        => __( 'On backorder', 'jalma-quick-stock-for-woocommerce' ),
-				'notManaged'         => __( 'Not tracked', 'jalma-quick-stock-for-woocommerce' ),
-				'searchPlaceholder'  => __( 'Search name or SKU…', 'jalma-quick-stock-for-woocommerce' ),
-				'product'            => __( 'Product', 'jalma-quick-stock-for-woocommerce' ),
-				'stock'              => __( 'Stock', 'jalma-quick-stock-for-woocommerce' ),
-				'lowStockThreshold'  => __( 'Low stock threshold', 'jalma-quick-stock-for-woocommerce' ),
+				'allCategories'      => __( 'All categories', 'jalma-inline-stock-editor-for-woocommerce' ),
+				'anyStatus'          => __( 'Any stock status', 'jalma-inline-stock-editor-for-woocommerce' ),
+				'inStock'            => __( 'In stock', 'jalma-inline-stock-editor-for-woocommerce' ),
+				'outOfStock'         => __( 'Out of stock', 'jalma-inline-stock-editor-for-woocommerce' ),
+				'onBackorder'        => __( 'On backorder', 'jalma-inline-stock-editor-for-woocommerce' ),
+				'notManaged'         => __( 'Not tracked', 'jalma-inline-stock-editor-for-woocommerce' ),
+				'searchPlaceholder'  => __( 'Search name or SKU…', 'jalma-inline-stock-editor-for-woocommerce' ),
+				'product'            => __( 'Product', 'jalma-inline-stock-editor-for-woocommerce' ),
+				'stock'              => __( 'Stock', 'jalma-inline-stock-editor-for-woocommerce' ),
+				'lowStockThreshold'  => __( 'Low stock threshold', 'jalma-inline-stock-editor-for-woocommerce' ),
 				/* translators: %d: the global low-stock threshold from WooCommerce settings */
-				'globalHint'         => __( '%d (global)', 'jalma-quick-stock-for-woocommerce' ),
-				'loading'            => __( 'Loading products…', 'jalma-quick-stock-for-woocommerce' ),
-				'noResults'          => __( 'No products match your filters.', 'jalma-quick-stock-for-woocommerce' ),
-				'trackStock'         => __( 'Track stock', 'jalma-quick-stock-for-woocommerce' ),
-				'actions'            => __( 'Stock tracking', 'jalma-quick-stock-for-woocommerce' ),
-				'notTracked'         => __( 'Not tracked', 'jalma-quick-stock-for-woocommerce' ),
-				'perVariation'       => __( '(managed per variation)', 'jalma-quick-stock-for-woocommerce' ),
-				'managePerVariation' => __( 'Manage stock per variation', 'jalma-quick-stock-for-woocommerce' ),
-				'prevPage'           => __( '‹ Previous', 'jalma-quick-stock-for-woocommerce' ),
-				'nextPage'           => __( 'Next ›', 'jalma-quick-stock-for-woocommerce' ),
+				'globalHint'         => __( '%d (global)', 'jalma-inline-stock-editor-for-woocommerce' ),
+				'loading'            => __( 'Loading products…', 'jalma-inline-stock-editor-for-woocommerce' ),
+				'noResults'          => __( 'No products match your filters.', 'jalma-inline-stock-editor-for-woocommerce' ),
+				'trackStock'         => __( 'Track stock', 'jalma-inline-stock-editor-for-woocommerce' ),
+				'actions'            => __( 'Stock tracking', 'jalma-inline-stock-editor-for-woocommerce' ),
+				'notTracked'         => __( 'Not tracked', 'jalma-inline-stock-editor-for-woocommerce' ),
+				'perVariation'       => __( '(managed per variation)', 'jalma-inline-stock-editor-for-woocommerce' ),
+				'managePerVariation' => __( 'Manage stock per variation', 'jalma-inline-stock-editor-for-woocommerce' ),
+				'prevPage'           => __( '‹ Previous', 'jalma-inline-stock-editor-for-woocommerce' ),
+				'nextPage'           => __( 'Next ›', 'jalma-inline-stock-editor-for-woocommerce' ),
 				/* translators: 1: current page number, 2: total page count, 3: total product count */
-				'pageOf'             => __( 'Page %1$d of %2$d (%3$d products)', 'jalma-quick-stock-for-woocommerce' ),
-				'saving'             => __( 'Saving…', 'jalma-quick-stock-for-woocommerce' ),
-				'saved'              => __( 'Saved', 'jalma-quick-stock-for-woocommerce' ),
-				'saveError'          => __( 'Save failed', 'jalma-quick-stock-for-woocommerce' ),
-				'sku'                => __( 'SKU', 'jalma-quick-stock-for-woocommerce' ),
-				'noSku'              => __( '(no SKU)', 'jalma-quick-stock-for-woocommerce' ),
+				'pageOf'             => __( 'Page %1$d of %2$d (%3$d products)', 'jalma-inline-stock-editor-for-woocommerce' ),
+				'saving'             => __( 'Saving…', 'jalma-inline-stock-editor-for-woocommerce' ),
+				'saved'              => __( 'Saved', 'jalma-inline-stock-editor-for-woocommerce' ),
+				'saveError'          => __( 'Save failed', 'jalma-inline-stock-editor-for-woocommerce' ),
+				'sku'                => __( 'SKU', 'jalma-inline-stock-editor-for-woocommerce' ),
+				'noSku'              => __( '(no SKU)', 'jalma-inline-stock-editor-for-woocommerce' ),
 			],
 		] );
 	}
@@ -86,8 +86,8 @@ class JQSW_Admin_Page {
 	public function render_page() {
 		?>
 		<div class="wrap jqsw-wrap">
-			<h1><?php esc_html_e( 'Quick Stock', 'jalma-quick-stock-for-woocommerce' ); ?></h1>
-			<p><?php esc_html_e( 'Update stock quantities and low-stock thresholds without opening each product. Click a field, type a new value, tab to the next. Changes save automatically.', 'jalma-quick-stock-for-woocommerce' ); ?></p>
+			<h1><?php esc_html_e( 'Quick Stock', 'jalma-inline-stock-editor-for-woocommerce' ); ?></h1>
+			<p><?php esc_html_e( 'Update stock quantities and low-stock thresholds without opening each product. Click a field, type a new value, tab to the next. Changes save automatically.', 'jalma-inline-stock-editor-for-woocommerce' ); ?></p>
 
 			<?php
 			/**
@@ -101,9 +101,9 @@ class JQSW_Admin_Page {
 			?>
 
 			<div class="jqsw-filters">
-				<select class="jqsw-filter-category wc-enhanced-select" data-placeholder="<?php esc_attr_e( 'All categories', 'jalma-quick-stock-for-woocommerce' ); ?>"></select>
+				<select class="jqsw-filter-category wc-enhanced-select" data-placeholder="<?php esc_attr_e( 'All categories', 'jalma-inline-stock-editor-for-woocommerce' ); ?>"></select>
 				<select class="jqsw-filter-stock-status"></select>
-				<input type="search" class="jqsw-filter-search" placeholder="<?php esc_attr_e( 'Search name or SKU…', 'jalma-quick-stock-for-woocommerce' ); ?>">
+				<input type="search" class="jqsw-filter-search" placeholder="<?php esc_attr_e( 'Search name or SKU…', 'jalma-inline-stock-editor-for-woocommerce' ); ?>">
 				<?php
 				/**
 				 * Fires inside the filter row so add-ons can inject extra
@@ -130,23 +130,23 @@ class JQSW_Admin_Page {
 				<table class="widefat striped jqsw-table">
 					<thead>
 						<tr>
-							<th class="jqsw-col-product"><?php esc_html_e( 'Product', 'jalma-quick-stock-for-woocommerce' ); ?></th>
-							<th class="jqsw-col-stock"><?php esc_html_e( 'Stock', 'jalma-quick-stock-for-woocommerce' ); ?></th>
-							<th class="jqsw-col-threshold"><?php esc_html_e( 'Low stock threshold', 'jalma-quick-stock-for-woocommerce' ); ?></th>
+							<th class="jqsw-col-product"><?php esc_html_e( 'Product', 'jalma-inline-stock-editor-for-woocommerce' ); ?></th>
+							<th class="jqsw-col-stock"><?php esc_html_e( 'Stock', 'jalma-inline-stock-editor-for-woocommerce' ); ?></th>
+							<th class="jqsw-col-threshold"><?php esc_html_e( 'Low stock threshold', 'jalma-inline-stock-editor-for-woocommerce' ); ?></th>
 							<th class="jqsw-col-status"></th>
-							<th class="jqsw-col-actions"><?php esc_html_e( 'Stock tracking', 'jalma-quick-stock-for-woocommerce' ); ?></th>
+							<th class="jqsw-col-actions"><?php esc_html_e( 'Stock tracking', 'jalma-inline-stock-editor-for-woocommerce' ); ?></th>
 						</tr>
 					</thead>
 					<tbody id="jqsw-tbody">
-						<tr class="jqsw-loading-row"><td colspan="5"><?php esc_html_e( 'Loading products…', 'jalma-quick-stock-for-woocommerce' ); ?></td></tr>
+						<tr class="jqsw-loading-row"><td colspan="5"><?php esc_html_e( 'Loading products…', 'jalma-inline-stock-editor-for-woocommerce' ); ?></td></tr>
 					</tbody>
 				</table>
 			</div>
 
 			<div class="jqsw-pagination">
-				<button type="button" class="button jqsw-prev" disabled>&lsaquo; <?php esc_html_e( 'Previous', 'jalma-quick-stock-for-woocommerce' ); ?></button>
+				<button type="button" class="button jqsw-prev" disabled>&lsaquo; <?php esc_html_e( 'Previous', 'jalma-inline-stock-editor-for-woocommerce' ); ?></button>
 				<span class="jqsw-page-info"></span>
-				<button type="button" class="button jqsw-next" disabled><?php esc_html_e( 'Next', 'jalma-quick-stock-for-woocommerce' ); ?> &rsaquo;</button>
+				<button type="button" class="button jqsw-next" disabled><?php esc_html_e( 'Next', 'jalma-inline-stock-editor-for-woocommerce' ); ?> &rsaquo;</button>
 			</div>
 
 			<?php

@@ -1,9 +1,9 @@
-# Swedish (Sweden) translation for Quick Stock for WooCommerce
+# Swedish (Sweden) translation for Jalma Inline Stock Editor for WooCommerce
 # Copyright (C) 2026 jonashjalmarsson
-# This file is distributed under the same license as the Quick Stock for WooCommerce plugin.
+# This file is distributed under the same license as the Jalma Inline Stock Editor for WooCommerce plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: Quick Stock for WooCommerce 0.1.0\n"
+"Project-Id-Version: Jalma Inline Stock Editor for WooCommerce 1.1.2\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-04-11 00:00+0000\n"
 "PO-Revision-Date: 2026-04-11 00:00+0000\n"
@@ -14,6 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Domain: jalma-inline-stock-editor-for-woocommerce\n"
 
 #. translators: %s: plugin name
 msgid "%s requires WooCommerce to be active."

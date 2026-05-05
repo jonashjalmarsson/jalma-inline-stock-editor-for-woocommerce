@@ -1,15 +1,15 @@
 <?php
 /**
- * Plugin Name: Quick Stock for WooCommerce
- * Plugin URI:
+ * Plugin Name: Jalma Inline Stock Editor for WooCommerce
+ * Plugin URI: https://wordpress.org/plugins/jalma-inline-stock-editor-for-woocommerce/
  * Description: Edit WooCommerce stock quantities and low-stock thresholds directly from a single table — no more clicking into each product. Inline edit, keyboard navigation, category filter, full variation support.
- * Version: 1.1.1
+ * Version: 1.1.2
  * Author: jonashjalmarsson
  * Author URI: https://jonashjalmarsson.se
  * License: GPLv2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Requires Plugins: woocommerce
- * Text Domain: jalma-quick-stock-for-woocommerce
+ * Text Domain: jalma-inline-stock-editor-for-woocommerce
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -33,8 +33,8 @@ add_action( 'before_woocommerce_init', function () {
 	}
 } );
 
-define( 'JQSW_VERSION', '1.1.1' );
-define( 'JQSW_SLUG', 'jalma-quick-stock-for-woocommerce' );
+define( 'JQSW_VERSION', '1.1.2' );
+define( 'JQSW_SLUG', 'jalma-inline-stock-editor-for-woocommerce' );
 define( 'JQSW_PATH', plugin_dir_path( __FILE__ ) );
 define( 'JQSW_URL', plugin_dir_url( __FILE__ ) );
 
@@ -46,7 +46,7 @@ new \JHWPL\UpdateChecker( [
 	'basename_dir'  => plugin_basename( __DIR__ ),
 	'basename_file' => plugin_basename( __FILE__ ),
 	'slug'          => JQSW_SLUG,
-	'info_url'      => 'https://plugins.jonashjalmarsson.se/jalma-quick-stock-for-woocommerce/info.json',
+	'info_url'      => 'https://plugins.jonashjalmarsson.se/jalma-inline-stock-editor-for-woocommerce/info.json',
 ] );
 /* @wporg-strip-end */
 
@@ -56,8 +56,8 @@ add_action( 'plugins_loaded', function () {
 			echo '<div class="notice notice-error"><p>' .
 				sprintf(
 					/* translators: %s: plugin name */
-					esc_html__( '%s requires WooCommerce to be active.', 'jalma-quick-stock-for-woocommerce' ),
-					'<strong>Quick Stock for WooCommerce</strong>'
+					esc_html__( '%s requires WooCommerce to be active.', 'jalma-inline-stock-editor-for-woocommerce' ),
+					'<strong>Jalma Inline Stock Editor for WooCommerce</strong>'
 				) .
 				'</p></div>';
 		} );
@@ -84,7 +84,7 @@ add_action( 'admin_init', function () {
 		return;
 	}
 	new \JHLSQ\Purchase( [
-		'free_basename'        => 'jalma-quick-stock-for-woocommerce/jalma-quick-stock-for-woocommerce.php',
+		'free_basename'        => 'jalma-inline-stock-editor-for-woocommerce/jalma-inline-stock-editor-for-woocommerce.php',
 		'pro_basename'         => 'jalma-quick-stock-for-woocommerce-pro/jalma-quick-stock-for-woocommerce-pro.php',
 		'pro_class_check'      => 'JQSWP\\Tabs',
 		'pro_label'            => 'Quick Stock for WooCommerce PRO',

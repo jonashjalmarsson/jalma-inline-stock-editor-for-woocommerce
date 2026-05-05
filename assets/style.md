@@ -1,4 +1,4 @@
-# Quick Stock for WooCommerce — Asset Style
+# Jalma Inline Stock Editor for WooCommerce — Asset Style
 
 Ärver globala regler från `plugins/assets/style.md`. Overrides nedan.
 
