@@ -31,21 +31,21 @@ class JISE_Admin_Page {
 		wp_enqueue_style( 'select2' );
 
 		wp_enqueue_style(
-			'jqsw-admin',
-			JISE_URL . 'admin/css/quick-stock.css',
+			'jise-admin',
+			JISE_URL . 'admin/css/stock-editor.css',
 			[],
 			JISE_VERSION
 		);
 
 		wp_enqueue_script(
-			'jqsw-admin',
-			JISE_URL . 'admin/js/quick-stock.js',
+			'jise-admin',
+			JISE_URL . 'admin/js/stock-editor.js',
 			[ 'jquery', 'wc-enhanced-select' ],
 			JISE_VERSION,
 			true
 		);
 
-		wp_localize_script( 'jqsw-admin', 'jqswData', [
+		wp_localize_script( 'jise-admin', 'jiseData', [
 			'restUrl'             => esc_url_raw( rest_url( 'jalma-quick-stock/v1/' ) ),
 			'nonce'               => wp_create_nonce( 'wp_rest' ),
 			'categories'          => $this->get_hierarchical_categories(),
@@ -85,7 +85,7 @@ class JISE_Admin_Page {
 
 	public function render_page() {
 		?>
-		<div class="wrap jqsw-wrap">
+		<div class="wrap jise-wrap">
 			<h1><?php esc_html_e( 'Stock Editor', 'jalma-inline-stock-editor' ); ?></h1>
 			<p><?php esc_html_e( 'Update stock quantities and low-stock thresholds without opening each product. Click a field, type a new value, tab to the next. Changes save automatically.', 'jalma-inline-stock-editor' ); ?></p>
 
@@ -100,10 +100,10 @@ class JISE_Admin_Page {
 			do_action( 'jise_before_filters' );
 			?>
 
-			<div class="jqsw-filters">
-				<select class="jqsw-filter-category wc-enhanced-select" data-placeholder="<?php esc_attr_e( 'All categories', 'jalma-inline-stock-editor' ); ?>"></select>
-				<select class="jqsw-filter-stock-status"></select>
-				<input type="search" class="jqsw-filter-search" placeholder="<?php esc_attr_e( 'Search name or SKU…', 'jalma-inline-stock-editor' ); ?>">
+			<div class="jise-filters">
+				<select class="jise-filter-category wc-enhanced-select" data-placeholder="<?php esc_attr_e( 'All categories', 'jalma-inline-stock-editor' ); ?>"></select>
+				<select class="jise-filter-stock-status"></select>
+				<input type="search" class="jise-filter-search" placeholder="<?php esc_attr_e( 'Search name or SKU…', 'jalma-inline-stock-editor' ); ?>">
 				<?php
 				/**
 				 * Fires inside the filter row so add-ons can inject extra
@@ -126,27 +126,27 @@ class JISE_Admin_Page {
 			do_action( 'jise_before_table' );
 			?>
 
-			<div class="jqsw-table-wrap">
-				<table class="widefat striped jqsw-table">
+			<div class="jise-table-wrap">
+				<table class="widefat striped jise-table">
 					<thead>
 						<tr>
-							<th class="jqsw-col-product"><?php esc_html_e( 'Product', 'jalma-inline-stock-editor' ); ?></th>
-							<th class="jqsw-col-stock"><?php esc_html_e( 'Stock', 'jalma-inline-stock-editor' ); ?></th>
-							<th class="jqsw-col-threshold"><?php esc_html_e( 'Low stock threshold', 'jalma-inline-stock-editor' ); ?></th>
-							<th class="jqsw-col-status"></th>
-							<th class="jqsw-col-actions"><?php esc_html_e( 'Stock tracking', 'jalma-inline-stock-editor' ); ?></th>
+							<th class="jise-col-product"><?php esc_html_e( 'Product', 'jalma-inline-stock-editor' ); ?></th>
+							<th class="jise-col-stock"><?php esc_html_e( 'Stock', 'jalma-inline-stock-editor' ); ?></th>
+							<th class="jise-col-threshold"><?php esc_html_e( 'Low stock threshold', 'jalma-inline-stock-editor' ); ?></th>
+							<th class="jise-col-status"></th>
+							<th class="jise-col-actions"><?php esc_html_e( 'Stock tracking', 'jalma-inline-stock-editor' ); ?></th>
 						</tr>
 					</thead>
-					<tbody id="jqsw-tbody">
-						<tr class="jqsw-loading-row"><td colspan="5"><?php esc_html_e( 'Loading products…', 'jalma-inline-stock-editor' ); ?></td></tr>
+					<tbody id="jise-tbody">
+						<tr class="jise-loading-row"><td colspan="5"><?php esc_html_e( 'Loading products…', 'jalma-inline-stock-editor' ); ?></td></tr>
 					</tbody>
 				</table>
 			</div>
 
-			<div class="jqsw-pagination">
-				<button type="button" class="button jqsw-prev" disabled>&lsaquo; <?php esc_html_e( 'Previous', 'jalma-inline-stock-editor' ); ?></button>
-				<span class="jqsw-page-info"></span>
-				<button type="button" class="button jqsw-next" disabled><?php esc_html_e( 'Next', 'jalma-inline-stock-editor' ); ?> &rsaquo;</button>
+			<div class="jise-pagination">
+				<button type="button" class="button jise-prev" disabled>&lsaquo; <?php esc_html_e( 'Previous', 'jalma-inline-stock-editor' ); ?></button>
+				<span class="jise-page-info"></span>
+				<button type="button" class="button jise-next" disabled><?php esc_html_e( 'Next', 'jalma-inline-stock-editor' ); ?> &rsaquo;</button>
 			</div>
 
 			<?php

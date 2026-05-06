@@ -5,12 +5,12 @@
  * thresholds. Fetches paginated products from the plugin's REST API,
  * renders them into a table, and saves changes via debounced POST /update.
  *
- * Globals: jqswData (injected via wp_localize_script), jQuery.
+ * Globals: jiseData (injected via wp_localize_script), jQuery.
  */
 (function ($) {
 	'use strict';
 
-	var data = window.jqswData || {};
+	var data = window.jiseData || {};
 	var S = data.strings || {};
 
 	var state = {
@@ -79,7 +79,7 @@
 	}
 
 	function renderCategoryFilter() {
-		var $sel = $('.jqsw-filter-category').empty();
+		var $sel = $('.jise-filter-category').empty();
 		$sel.append('<option value="0">' + escapeHtml(S.allCategories) + '</option>');
 		(data.categories || []).forEach(function (cat) {
 			var prefix = '';
@@ -92,7 +92,7 @@
 	}
 
 	function renderStockStatusFilter() {
-		var $sel = $('.jqsw-filter-stock-status').empty();
+		var $sel = $('.jise-filter-stock-status').empty();
 		$sel.append('<option value="">' + escapeHtml(S.anyStatus) + '</option>');
 		$sel.append('<option value="instock">' + escapeHtml(S.inStock) + '</option>');
 		$sel.append('<option value="outofstock">' + escapeHtml(S.outOfStock) + '</option>');
@@ -102,21 +102,21 @@
 
 	function renderProductRow(p) {
 		var thumb = p.thumbnail
-			? '<img src="' + escapeHtml(p.thumbnail) + '" alt="" class="jqsw-thumb">'
-			: '<span class="jqsw-thumb jqsw-thumb-placeholder"></span>';
+			? '<img src="' + escapeHtml(p.thumbnail) + '" alt="" class="jise-thumb">'
+			: '<span class="jise-thumb jise-thumb-placeholder"></span>';
 
-		var sku = p.sku ? escapeHtml(p.sku) : '<em class="jqsw-no-sku">' + escapeHtml(S.noSku) + '</em>';
+		var sku = p.sku ? escapeHtml(p.sku) : '<em class="jise-no-sku">' + escapeHtml(S.noSku) + '</em>';
 		var titleLink = p.edit_url
 			? '<a href="' + escapeHtml(p.edit_url) + '" target="_blank" rel="noopener">' + escapeHtml(p.title) + '</a>'
 			: escapeHtml(p.title);
 
 		var productCell =
-			'<td class="jqsw-col-product">' +
-				'<div class="jqsw-product-inner">' +
+			'<td class="jise-col-product">' +
+				'<div class="jise-product-inner">' +
 					thumb +
-					'<div class="jqsw-product-meta">' +
-						'<div class="jqsw-product-title">' + titleLink + '</div>' +
-						'<div class="jqsw-product-sku">' + escapeHtml(S.sku) + ': ' + sku + '</div>' +
+					'<div class="jise-product-meta">' +
+						'<div class="jise-product-title">' + titleLink + '</div>' +
+						'<div class="jise-product-sku">' + escapeHtml(S.sku) + ': ' + sku + '</div>' +
 					'</div>' +
 				'</div>' +
 			'</td>';
@@ -128,38 +128,38 @@
 			// mode or editable inputs in parent-level mode. Actions column holds the
 			// toggle checkbox.
 			if (p.manage_per_variation) {
-				stockCell     = '<td class="jqsw-col-stock"><span class="jqsw-muted">' + escapeHtml(S.perVariation) + '</span></td>';
-				thresholdCell = '<td class="jqsw-col-threshold"><span class="jqsw-muted">' + escapeHtml(S.perVariation) + '</span></td>';
+				stockCell     = '<td class="jise-col-stock"><span class="jise-muted">' + escapeHtml(S.perVariation) + '</span></td>';
+				thresholdCell = '<td class="jise-col-threshold"><span class="jise-muted">' + escapeHtml(S.perVariation) + '</span></td>';
 			} else {
 				var stockValV     = p.stock == null ? '' : p.stock;
 				var thresholdValV = p.low_stock_amount == null ? '' : p.low_stock_amount;
 				var placeholderV  = formatGlobalHint(data.globalLowStockAmount || 0);
 				stockCell =
-					'<td class="jqsw-col-stock">' +
-						'<input type="number" step="1" class="jqsw-stock-input" data-product-id="' + p.id + '" value="' + escapeHtml(stockValV) + '">' +
+					'<td class="jise-col-stock">' +
+						'<input type="number" step="1" class="jise-stock-input" data-product-id="' + p.id + '" value="' + escapeHtml(stockValV) + '">' +
 					'</td>';
 				thresholdCell =
-					'<td class="jqsw-col-threshold">' +
-						'<input type="number" step="1" class="jqsw-threshold-input" data-product-id="' + p.id + '" value="' + escapeHtml(thresholdValV) + '" placeholder="' + escapeHtml(placeholderV) + '">' +
+					'<td class="jise-col-threshold">' +
+						'<input type="number" step="1" class="jise-threshold-input" data-product-id="' + p.id + '" value="' + escapeHtml(thresholdValV) + '" placeholder="' + escapeHtml(placeholderV) + '">' +
 					'</td>';
 			}
 
 			actionCell =
-				'<td class="jqsw-col-actions">' +
-					'<label class="jqsw-variation-toggle">' +
-						'<input type="checkbox" class="jqsw-toggle-variation-stock" data-product-id="' + p.id + '"' +
+				'<td class="jise-col-actions">' +
+					'<label class="jise-variation-toggle">' +
+						'<input type="checkbox" class="jise-toggle-variation-stock" data-product-id="' + p.id + '"' +
 						(p.manage_per_variation ? ' checked' : '') + '> ' +
 						escapeHtml(S.managePerVariation) +
 					'</label>' +
 				'</td>';
 		} else if (!p.manage_stock) {
 			// Not tracked simple product: empty stock/threshold cells, unchecked toggle in actions
-			stockCell     = '<td class="jqsw-col-stock"><span class="jqsw-muted">' + escapeHtml(S.notTracked) + '</span></td>';
-			thresholdCell = '<td class="jqsw-col-threshold"></td>';
+			stockCell     = '<td class="jise-col-stock"><span class="jise-muted">' + escapeHtml(S.notTracked) + '</span></td>';
+			thresholdCell = '<td class="jise-col-threshold"></td>';
 			actionCell =
-				'<td class="jqsw-col-actions">' +
-					'<label class="jqsw-track-toggle">' +
-						'<input type="checkbox" class="jqsw-toggle-management" data-product-id="' + p.id + '"> ' +
+				'<td class="jise-col-actions">' +
+					'<label class="jise-track-toggle">' +
+						'<input type="checkbox" class="jise-toggle-management" data-product-id="' + p.id + '"> ' +
 						escapeHtml(S.trackStock) +
 					'</label>' +
 				'</td>';
@@ -167,46 +167,46 @@
 			// Tracked simple product: editable inputs + checked toggle in actions
 			var stockVal = p.stock == null ? '' : p.stock;
 			stockCell =
-				'<td class="jqsw-col-stock">' +
-					'<input type="number" step="1" class="jqsw-stock-input" data-product-id="' + p.id + '" value="' + escapeHtml(stockVal) + '">' +
+				'<td class="jise-col-stock">' +
+					'<input type="number" step="1" class="jise-stock-input" data-product-id="' + p.id + '" value="' + escapeHtml(stockVal) + '">' +
 				'</td>';
 
 			var thresholdVal = p.low_stock_amount == null ? '' : p.low_stock_amount;
 			var placeholder  = formatGlobalHint(data.globalLowStockAmount || 0);
 			thresholdCell =
-				'<td class="jqsw-col-threshold">' +
-					'<input type="number" step="1" class="jqsw-threshold-input" data-product-id="' + p.id + '" value="' + escapeHtml(thresholdVal) + '" placeholder="' + escapeHtml(placeholder) + '">' +
+				'<td class="jise-col-threshold">' +
+					'<input type="number" step="1" class="jise-threshold-input" data-product-id="' + p.id + '" value="' + escapeHtml(thresholdVal) + '" placeholder="' + escapeHtml(placeholder) + '">' +
 				'</td>';
 
 			actionCell =
-				'<td class="jqsw-col-actions">' +
-					'<label class="jqsw-track-toggle">' +
-						'<input type="checkbox" class="jqsw-toggle-management" data-product-id="' + p.id + '" checked> ' +
+				'<td class="jise-col-actions">' +
+					'<label class="jise-track-toggle">' +
+						'<input type="checkbox" class="jise-toggle-management" data-product-id="' + p.id + '" checked> ' +
 						escapeHtml(S.trackStock) +
 					'</label>' +
 				'</td>';
 		}
 
-		var statusCell = '<td class="jqsw-col-status"><span class="jqsw-status" data-product-id="' + p.id + '"></span></td>';
+		var statusCell = '<td class="jise-col-status"><span class="jise-status" data-product-id="' + p.id + '"></span></td>';
 
-		return '<tr class="jqsw-row jqsw-row-' + p.type + '" data-product-id="' + p.id + '">' + productCell + stockCell + thresholdCell + statusCell + actionCell + '</tr>';
+		return '<tr class="jise-row jise-row-' + p.type + '" data-product-id="' + p.id + '">' + productCell + stockCell + thresholdCell + statusCell + actionCell + '</tr>';
 	}
 
 	function renderVariationRow(v) {
 		var thumb = v.thumbnail
-			? '<img src="' + escapeHtml(v.thumbnail) + '" alt="" class="jqsw-thumb">'
-			: '<span class="jqsw-thumb jqsw-thumb-placeholder"></span>';
+			? '<img src="' + escapeHtml(v.thumbnail) + '" alt="" class="jise-thumb">'
+			: '<span class="jise-thumb jise-thumb-placeholder"></span>';
 
-		var sku = v.sku ? escapeHtml(v.sku) : '<em class="jqsw-no-sku">' + escapeHtml(S.noSku) + '</em>';
+		var sku = v.sku ? escapeHtml(v.sku) : '<em class="jise-no-sku">' + escapeHtml(S.noSku) + '</em>';
 
 		var productCell =
-			'<td class="jqsw-col-product jqsw-variation-cell">' +
-				'<div class="jqsw-product-inner jqsw-variation-inner">' +
-					'<span class="jqsw-variation-arrow">└</span>' +
+			'<td class="jise-col-product jise-variation-cell">' +
+				'<div class="jise-product-inner jise-variation-inner">' +
+					'<span class="jise-variation-arrow">└</span>' +
 					thumb +
-					'<div class="jqsw-product-meta">' +
-						'<div class="jqsw-product-title">' + escapeHtml(v.title) + '</div>' +
-						'<div class="jqsw-product-sku">' + escapeHtml(S.sku) + ': ' + sku + '</div>' +
+					'<div class="jise-product-meta">' +
+						'<div class="jise-product-title">' + escapeHtml(v.title) + '</div>' +
+						'<div class="jise-product-sku">' + escapeHtml(S.sku) + ': ' + sku + '</div>' +
 					'</div>' +
 				'</div>' +
 			'</td>';
@@ -216,25 +216,25 @@
 		var placeholder  = formatGlobalHint(data.globalLowStockAmount || 0);
 
 		var stockCell =
-			'<td class="jqsw-col-stock">' +
-				'<input type="number" step="1" class="jqsw-stock-input" data-product-id="' + v.id + '" value="' + escapeHtml(stockVal) + '">' +
+			'<td class="jise-col-stock">' +
+				'<input type="number" step="1" class="jise-stock-input" data-product-id="' + v.id + '" value="' + escapeHtml(stockVal) + '">' +
 			'</td>';
 
 		var thresholdCell =
-			'<td class="jqsw-col-threshold">' +
-				'<input type="number" step="1" class="jqsw-threshold-input" data-product-id="' + v.id + '" value="' + escapeHtml(thresholdVal) + '" placeholder="' + escapeHtml(placeholder) + '">' +
+			'<td class="jise-col-threshold">' +
+				'<input type="number" step="1" class="jise-threshold-input" data-product-id="' + v.id + '" value="' + escapeHtml(thresholdVal) + '" placeholder="' + escapeHtml(placeholder) + '">' +
 			'</td>';
 
-		var statusCell = '<td class="jqsw-col-status"><span class="jqsw-status" data-product-id="' + v.id + '"></span></td>';
-		var actionCell = '<td class="jqsw-col-actions"></td>';
+		var statusCell = '<td class="jise-col-status"><span class="jise-status" data-product-id="' + v.id + '"></span></td>';
+		var actionCell = '<td class="jise-col-actions"></td>';
 
-		return '<tr class="jqsw-row jqsw-row-variation" data-product-id="' + v.id + '" data-parent-id="' + v.parent_id + '">' + productCell + stockCell + thresholdCell + statusCell + actionCell + '</tr>';
+		return '<tr class="jise-row jise-row-variation" data-product-id="' + v.id + '" data-parent-id="' + v.parent_id + '">' + productCell + stockCell + thresholdCell + statusCell + actionCell + '</tr>';
 	}
 
 	function renderTable(products) {
-		var $tbody = $('#jqsw-tbody').empty();
+		var $tbody = $('#jise-tbody').empty();
 		if (!products || products.length === 0) {
-			$tbody.append('<tr><td colspan="5" class="jqsw-empty">' + escapeHtml(S.noResults) + '</td></tr>');
+			$tbody.append('<tr><td colspan="5" class="jise-empty">' + escapeHtml(S.noResults) + '</td></tr>');
 			return;
 		}
 		products.forEach(function (p) {
@@ -251,9 +251,9 @@
 			.replace('%1$d', state.page)
 			.replace('%2$d', state.totalPages)
 			.replace('%3$d', state.totalProducts);
-		$('.jqsw-page-info').text(info);
-		$('.jqsw-prev').prop('disabled', state.page <= 1);
-		$('.jqsw-next').prop('disabled', state.page >= state.totalPages);
+		$('.jise-page-info').text(info);
+		$('.jise-prev').prop('disabled', state.page <= 1);
+		$('.jise-next').prop('disabled', state.page >= state.totalPages);
 	}
 
 	// ────────────────────────────────────────────────────────────────────
@@ -261,7 +261,7 @@
 	// ────────────────────────────────────────────────────────────────────
 
 	function load() {
-		$('#jqsw-tbody').html('<tr class="jqsw-loading-row"><td colspan="5">' + escapeHtml(S.loading) + '</td></tr>');
+		$('#jise-tbody').html('<tr class="jise-loading-row"><td colspan="5">' + escapeHtml(S.loading) + '</td></tr>');
 
 		apiGet('products', {
 			page: state.page,
@@ -275,7 +275,7 @@
 			renderTable(res.products);
 			renderPagination();
 		}).catch(function (err) {
-			$('#jqsw-tbody').html('<tr><td colspan="5" class="jqsw-error">' + escapeHtml(err.message) + '</td></tr>');
+			$('#jise-tbody').html('<tr><td colspan="5" class="jise-error">' + escapeHtml(err.message) + '</td></tr>');
 		});
 	}
 
@@ -320,14 +320,14 @@
 			payload.low_stock_amount = val === '' ? null : parseInt(val, 10);
 		}
 
-		var $status = $('tr[data-product-id="' + productId + '"] .jqsw-status');
-		$status.removeClass('jqsw-status-saved jqsw-status-error').addClass('jqsw-status-saving').text(S.saving);
+		var $status = $('tr[data-product-id="' + productId + '"] .jise-status');
+		$status.removeClass('jise-status-saved jise-status-error').addClass('jise-status-saving').text(S.saving);
 
 		apiPost('update', payload).then(function () {
-			$status.removeClass('jqsw-status-saving').addClass('jqsw-status-saved').text(S.saved);
-			setTimeout(function () { $status.text(''); $status.removeClass('jqsw-status-saved'); }, 2000);
+			$status.removeClass('jise-status-saving').addClass('jise-status-saved').text(S.saved);
+			setTimeout(function () { $status.text(''); $status.removeClass('jise-status-saved'); }, 2000);
 		}).catch(function (err) {
-			$status.removeClass('jqsw-status-saving').addClass('jqsw-status-error').attr('title', err.message).text(S.saveError);
+			$status.removeClass('jise-status-saving').addClass('jise-status-error').attr('title', err.message).text(S.saveError);
 		});
 	}
 
@@ -337,12 +337,12 @@
 
 	function bindEvents() {
 		// Filter changes
-		$(document).on('change', '.jqsw-filter-category', function () {
+		$(document).on('change', '.jise-filter-category', function () {
 			state.category = parseInt($(this).val() || 0, 10);
 			state.page = 1;
 			load();
 		});
-		$(document).on('change', '.jqsw-filter-stock-status', function () {
+		$(document).on('change', '.jise-filter-stock-status', function () {
 			state.stockStatus = $(this).val() || '';
 			state.page = 1;
 			load();
@@ -350,7 +350,7 @@
 
 		// Search (debounced)
 		var searchTimer;
-		$(document).on('input', '.jqsw-filter-search', function () {
+		$(document).on('input', '.jise-filter-search', function () {
 			var val = $(this).val();
 			clearTimeout(searchTimer);
 			searchTimer = setTimeout(function () {
@@ -361,38 +361,38 @@
 		});
 
 		// Pagination
-		$(document).on('click', '.jqsw-prev', function () {
+		$(document).on('click', '.jise-prev', function () {
 			if (state.page > 1) { state.page--; load(); }
 		});
-		$(document).on('click', '.jqsw-next', function () {
+		$(document).on('click', '.jise-next', function () {
 			if (state.page < state.totalPages) { state.page++; load(); }
 		});
 
 		// Inline edit — stock
-		$(document).on('input', '.jqsw-stock-input', function () {
+		$(document).on('input', '.jise-stock-input', function () {
 			scheduleSave($(this), 'stock');
 		});
-		$(document).on('blur', '.jqsw-stock-input', function () {
+		$(document).on('blur', '.jise-stock-input', function () {
 			var productId = $(this).data('product-id');
 			var key = productId + ':stock';
 			if (saveTimers[key]) { clearTimeout(saveTimers[key]); commitSave($(this), 'stock'); }
 		});
 
 		// Inline edit — threshold
-		$(document).on('input', '.jqsw-threshold-input', function () {
+		$(document).on('input', '.jise-threshold-input', function () {
 			scheduleSave($(this), 'low_stock_amount');
 		});
-		$(document).on('blur', '.jqsw-threshold-input', function () {
+		$(document).on('blur', '.jise-threshold-input', function () {
 			var productId = $(this).data('product-id');
 			var key = productId + ':low_stock_amount';
 			if (saveTimers[key]) { clearTimeout(saveTimers[key]); commitSave($(this), 'low_stock_amount'); }
 		});
 
 		// Keyboard: Enter → save and jump to next row's stock input
-		$(document).on('keydown', '.jqsw-stock-input, .jqsw-threshold-input', function (e) {
+		$(document).on('keydown', '.jise-stock-input, .jise-threshold-input', function (e) {
 			if (e.key === 'Enter') {
 				e.preventDefault();
-				var $all = $('.jqsw-stock-input, .jqsw-threshold-input');
+				var $all = $('.jise-stock-input, .jise-threshold-input');
 				var idx = $all.index(this);
 				if (idx >= 0 && idx < $all.length - 1) {
 					$all.eq(idx + 1).focus().select();
@@ -405,7 +405,7 @@
 		// Variable product: toggle per-variation stock management.
 		// Replace the parent row in place, and remove/add variation rows
 		// as needed — no full reload.
-		$(document).on('change', '.jqsw-toggle-variation-stock', function () {
+		$(document).on('change', '.jise-toggle-variation-stock', function () {
 			var productId = $(this).data('product-id');
 			var checked   = this.checked;
 			var $this     = $(this);
@@ -421,15 +421,15 @@
 					loadVariations(productId);
 				}
 				// Brief status feedback on the new parent row
-				var $status = $('tr[data-product-id="' + productId + '"] .jqsw-status').first();
-				$status.removeClass('jqsw-status-saving jqsw-status-error').addClass('jqsw-status-saved').text(S.saved);
-				setTimeout(function () { $status.text('').removeClass('jqsw-status-saved'); }, 2000);
+				var $status = $('tr[data-product-id="' + productId + '"] .jise-status').first();
+				$status.removeClass('jise-status-saving jise-status-error').addClass('jise-status-saved').text(S.saved);
+				setTimeout(function () { $status.text('').removeClass('jise-status-saved'); }, 2000);
 			}).catch(function (err) {
 				// Roll back the checkbox state on failure
 				$this.prop('checked', !checked);
 				$this.prop('disabled', false);
-				var $status = $('tr[data-product-id="' + productId + '"] .jqsw-status').first();
-				$status.removeClass('jqsw-status-saving jqsw-status-saved').addClass('jqsw-status-error').attr('title', err.message).text(S.saveError);
+				var $status = $('tr[data-product-id="' + productId + '"] .jise-status').first();
+				$status.removeClass('jise-status-saving jise-status-saved').addClass('jise-status-error').attr('title', err.message).text(S.saveError);
 			});
 		});
 
@@ -437,7 +437,7 @@
 		// management depending on its new state. Per-row replacement, no full
 		// table reload. When enabling, auto-focus the new stock input so the
 		// user can start typing immediately.
-		$(document).on('change', '.jqsw-toggle-management', function () {
+		$(document).on('change', '.jise-toggle-management', function () {
 			var productId = $(this).data('product-id');
 			var checked   = this.checked;
 			var $cb       = $(this);
@@ -447,12 +447,12 @@
 				var $row = $('tr[data-product-id="' + productId + '"]').first();
 				$row.replaceWith(renderProductRow(updated));
 				if (checked) {
-					var $newInput = $('tr[data-product-id="' + productId + '"] .jqsw-stock-input').first();
+					var $newInput = $('tr[data-product-id="' + productId + '"] .jise-stock-input').first();
 					if ($newInput.length) { $newInput.focus().select(); }
 				}
-				var $status = $('tr[data-product-id="' + productId + '"] .jqsw-status').first();
-				$status.removeClass('jqsw-status-saving jqsw-status-error').addClass('jqsw-status-saved').text(S.saved);
-				setTimeout(function () { $status.text('').removeClass('jqsw-status-saved'); }, 2000);
+				var $status = $('tr[data-product-id="' + productId + '"] .jise-status').first();
+				$status.removeClass('jise-status-saving jise-status-error').addClass('jise-status-saved').text(S.saved);
+				setTimeout(function () { $status.text('').removeClass('jise-status-saved'); }, 2000);
 			}).catch(function (err) {
 				// Roll back the checkbox on failure
 				$cb.prop('checked', !checked);
