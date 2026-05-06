@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Domain: jalma-inline-stock-editor-for-woocommerce\n"
+"X-Domain: jalma-inline-stock-editor\n"
 
 #. translators: %s: plugin name
 msgid "%s requires WooCommerce to be active."

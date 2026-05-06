@@ -1,4 +1,4 @@
-=== Jalma Inline Stock Editor for WooCommerce ===
+=== Jalma Inline Stock Editor ===
 Contributors: jonashjalmarsson
 Tags: woocommerce, stock, inventory, bulk edit, low stock
 Requires at least: 5.0
@@ -67,7 +67,7 @@ Not in the free version. A stock adjustment log is planned for the Pro version.
 == Changelog ==
 
 = 1.1.3 =
-* Renamed plugin to "Jalma Inline Stock Editor for WooCommerce" per wp.org Plugin Review feedback. New slug `jalma-inline-stock-editor-for-woocommerce`. "Inline" describes the free version's core UX (inline table-cell editing) more accurately than the generic "Quick". No functional change — same code, more distinctive name.
+* Renamed plugin to "Jalma Inline Stock Editor for WooCommerce" per wp.org Plugin Review feedback. New slug `jalma-inline-stock-editor`. "Inline" describes the free version's core UX (inline table-cell editing) more accurately than the generic "Quick". No functional change — same code, more distinctive name.
 
 = 1.1.1 =
 * Removed the cross-promotion `admin_notices` hook on the settings page (Guideline 11). The "you might also like Category Notifications for WooCommerce" suggestion was advertising another plugin from inside the admin dashboard, which the wp.org guidelines discourage even when scoped to the plugin's own settings screen.
