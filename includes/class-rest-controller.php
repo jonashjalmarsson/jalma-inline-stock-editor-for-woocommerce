@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * REST controller for Quick Stock.
+ * REST controller for Stock Editor.
  *
  * Namespace: jalma-quick-stock/v1
  *
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * All routes require `manage_woocommerce` capability and the default WP REST
  * nonce (X-WP-Nonce header). Nonce is supplied from wp_localize_script.
  */
-class JQSW_Rest_Controller {
+class JISE_Rest_Controller {
 
 	const NAMESPACE_ROOT = 'jalma-quick-stock/v1';
 
@@ -36,7 +36,7 @@ class JQSW_Rest_Controller {
 		 *
 		 * @param string $namespace The REST namespace ('jalma-quick-stock/v1').
 		 */
-		do_action( 'jqsw_before_register_routes', self::NAMESPACE_ROOT );
+		do_action( 'jise_before_register_routes', self::NAMESPACE_ROOT );
 
 		register_rest_route( self::NAMESPACE_ROOT, '/products', [
 			'methods'             => 'GET',
@@ -108,7 +108,7 @@ class JQSW_Rest_Controller {
 		 *
 		 * @param string $namespace The REST namespace ('jalma-quick-stock/v1').
 		 */
-		do_action( 'jqsw_after_register_routes', self::NAMESPACE_ROOT );
+		do_action( 'jise_after_register_routes', self::NAMESPACE_ROOT );
 	}
 
 	public function check_permission() {
@@ -225,7 +225,7 @@ class JQSW_Rest_Controller {
 	public function list_variations( $request ) {
 		$parent = wc_get_product( (int) $request['id'] );
 		if ( ! $parent || ! $parent->is_type( 'variable' ) ) {
-			return new WP_Error( 'jqsw_not_variable', __( 'Product is not a variable product.', 'jalma-inline-stock-editor-for-woocommerce' ), [ 'status' => 400 ] );
+			return new WP_Error( 'jise_not_variable', __( 'Product is not a variable product.', 'jalma-inline-stock-editor-for-woocommerce' ), [ 'status' => 400 ] );
 		}
 
 		$variations = [];
@@ -248,7 +248,7 @@ class JQSW_Rest_Controller {
 		$product    = wc_get_product( $product_id );
 
 		if ( ! $product ) {
-			return new WP_Error( 'jqsw_not_found', __( 'Product not found.', 'jalma-inline-stock-editor-for-woocommerce' ), [ 'status' => 404 ] );
+			return new WP_Error( 'jise_not_found', __( 'Product not found.', 'jalma-inline-stock-editor-for-woocommerce' ), [ 'status' => 404 ] );
 		}
 
 		$old_stock     = $product->get_stock_quantity();
@@ -270,7 +270,7 @@ class JQSW_Rest_Controller {
 
 		/**
 		 * Fires after a product's stock and/or low-stock threshold has been
-		 * updated through Quick Stock. This is the hook an adjustment-log
+		 * updated through Stock Editor. This is the hook an adjustment-log
 		 * add-on would listen to for writing audit entries.
 		 *
 		 * @since 1.0.5
@@ -281,7 +281,7 @@ class JQSW_Rest_Controller {
 		 *                                  'new_threshold'.
 		 * @param WP_REST_Request $request  The original request.
 		 */
-		do_action( 'jqsw_after_product_update', $product, [
+		do_action( 'jise_after_product_update', $product, [
 			'old_stock'     => $old_stock,
 			'new_stock'     => $product->get_stock_quantity(),
 			'old_threshold' => $old_threshold,
@@ -297,7 +297,7 @@ class JQSW_Rest_Controller {
 		$parent               = wc_get_product( $product_id );
 
 		if ( ! $parent || ! $parent->is_type( 'variable' ) ) {
-			return new WP_Error( 'jqsw_not_variable', __( 'Product is not a variable product.', 'jalma-inline-stock-editor-for-woocommerce' ), [ 'status' => 400 ] );
+			return new WP_Error( 'jise_not_variable', __( 'Product is not a variable product.', 'jalma-inline-stock-editor-for-woocommerce' ), [ 'status' => 400 ] );
 		}
 
 		if ( $manage_per_variation ) {
@@ -338,7 +338,7 @@ class JQSW_Rest_Controller {
 		$product    = wc_get_product( $product_id );
 
 		if ( ! $product ) {
-			return new WP_Error( 'jqsw_not_found', __( 'Product not found.', 'jalma-inline-stock-editor-for-woocommerce' ), [ 'status' => 404 ] );
+			return new WP_Error( 'jise_not_found', __( 'Product not found.', 'jalma-inline-stock-editor-for-woocommerce' ), [ 'status' => 404 ] );
 		}
 
 		$product->set_manage_stock( true );
@@ -355,7 +355,7 @@ class JQSW_Rest_Controller {
 		$product    = wc_get_product( $product_id );
 
 		if ( ! $product ) {
-			return new WP_Error( 'jqsw_not_found', __( 'Product not found.', 'jalma-inline-stock-editor-for-woocommerce' ), [ 'status' => 404 ] );
+			return new WP_Error( 'jise_not_found', __( 'Product not found.', 'jalma-inline-stock-editor-for-woocommerce' ), [ 'status' => 404 ] );
 		}
 
 		// Keep the existing _stock value so it can be restored if the user
@@ -417,6 +417,6 @@ class JQSW_Rest_Controller {
 		 * @param array      $data    The serialized product data.
 		 * @param WC_Product $product The product object.
 		 */
-		return apply_filters( 'jqsw_product_row_data', $data, $product );
+		return apply_filters( 'jise_product_row_data', $data, $product );
 	}
 }

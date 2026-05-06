@@ -3,7 +3,7 @@
  * Plugin Name: Jalma Inline Stock Editor for WooCommerce
  * Plugin URI: https://wordpress.org/plugins/jalma-inline-stock-editor-for-woocommerce/
  * Description: Edit WooCommerce stock quantities and low-stock thresholds directly from a single table — no more clicking into each product. Inline edit, keyboard navigation, category filter, full variation support.
- * Version: 1.1.2
+ * Version: 1.1.3
  * Author: jonashjalmarsson
  * Author URI: https://jonashjalmarsson.se
  * License: GPLv2 or later
@@ -33,19 +33,19 @@ add_action( 'before_woocommerce_init', function () {
 	}
 } );
 
-define( 'JQSW_VERSION', '1.1.2' );
-define( 'JQSW_SLUG', 'jalma-inline-stock-editor-for-woocommerce' );
-define( 'JQSW_PATH', plugin_dir_path( __FILE__ ) );
-define( 'JQSW_URL', plugin_dir_url( __FILE__ ) );
+define( 'JISE_VERSION', '1.1.3' );
+define( 'JISE_SLUG', 'jalma-inline-stock-editor-for-woocommerce' );
+define( 'JISE_PATH', plugin_dir_path( __FILE__ ) );
+define( 'JISE_URL', plugin_dir_url( __FILE__ ) );
 
 /* @wporg-strip-start */
 /* jhwpl — self-hosted update checker (stripped from wp.org build) */
-require_once JQSW_PATH . 'jhwpl/update_checker.php';
+require_once JISE_PATH . 'jhwpl/update_checker.php';
 new \JHWPL\UpdateChecker( [
-	'version'       => JQSW_VERSION,
+	'version'       => JISE_VERSION,
 	'basename_dir'  => plugin_basename( __DIR__ ),
 	'basename_file' => plugin_basename( __FILE__ ),
-	'slug'          => JQSW_SLUG,
+	'slug'          => JISE_SLUG,
 	'info_url'      => 'https://plugins.jonashjalmarsson.se/jalma-inline-stock-editor-for-woocommerce/info.json',
 ] );
 /* @wporg-strip-end */
@@ -64,11 +64,11 @@ add_action( 'plugins_loaded', function () {
 		return;
 	}
 
-	require_once JQSW_PATH . 'includes/class-admin-page.php';
-	require_once JQSW_PATH . 'includes/class-rest-controller.php';
+	require_once JISE_PATH . 'includes/class-admin-page.php';
+	require_once JISE_PATH . 'includes/class-rest-controller.php';
 
-	new JQSW_Admin_Page();
-	new JQSW_Rest_Controller();
+	new JISE_Admin_Page();
+	new JISE_Rest_Controller();
 } );
 
 /*
@@ -77,7 +77,7 @@ add_action( 'plugins_loaded', function () {
  * Free plugin's settings page hook + the WooCommerce menu have already
  * been registered.
  */
-require_once JQSW_PATH . 'jhlsq-purchase/jhlsq-purchase.php';
+require_once JISE_PATH . 'jhlsq-purchase/jhlsq-purchase.php';
 
 add_action( 'admin_init', function () {
 	if ( ! class_exists( '\\JHLSQ\\Purchase' ) ) {
@@ -87,16 +87,16 @@ add_action( 'admin_init', function () {
 		'free_basename'        => 'jalma-inline-stock-editor-for-woocommerce/jalma-inline-stock-editor-for-woocommerce.php',
 		'pro_basename'         => 'jalma-quick-stock-for-woocommerce-pro/jalma-quick-stock-for-woocommerce-pro.php',
 		'pro_class_check'      => 'JQSWP\\Tabs',
-		'pro_label'            => 'Quick Stock for WooCommerce PRO',
+		'pro_label'            => 'Stock Editor for WooCommerce PRO',
 		'checkout_url'         => 'https://pay.jonashjalmarsson.se/checkout/buy/03c85738-f8d1-40ef-ae72-046503763ecb',
 		'download_url'         => 'https://plugins.jonashjalmarsson.se/jalma-quick-stock-for-woocommerce-pro/jalma-quick-stock-for-woocommerce-pro.zip',
 		'bridge_base'          => 'https://jonashjalmarsson.se/wp-json/lsq-bridge/v1',
 		'license_option'       => 'lsq_jalma-quick-stock-for-woocommerce-pro',
-		'license_page_url'     => admin_url( 'admin.php?page=jqswp-license' ),
-		'settings_page_hook'   => 'woocommerce_page_jqsw-quick-stock',
-		'after_heading_action' => 'jqsw_before_filters',
+		'license_page_url'     => admin_url( 'admin.php?page=jise-license' ),
+		'settings_page_hook'   => 'woocommerce_page_jise-stock-editor',
+		'after_heading_action' => 'jise_before_filters',
 		'pitch_text'           => 'CSV export and import for product stock data — filter by category, include variations, two-step preview-before-apply flow',
 		'landing_page_url'     => 'https://jonashjalmarsson.se/plugins/jalma-quick-stock-for-woocommerce-pro/',
-		'install_action_name'  => 'jqsw_install_pro',
+		'install_action_name'  => 'jise_install_pro',
 	] );
 } );

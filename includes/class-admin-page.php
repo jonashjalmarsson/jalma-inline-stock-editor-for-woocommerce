@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class JQSW_Admin_Page {
+class JISE_Admin_Page {
 
 	public function __construct() {
 		add_action( 'admin_menu', [ $this, 'add_menu_page' ] );
@@ -14,16 +14,16 @@ class JQSW_Admin_Page {
 	public function add_menu_page() {
 		add_submenu_page(
 			'woocommerce',
-			__( 'Quick Stock', 'jalma-inline-stock-editor-for-woocommerce' ),
-			__( 'Quick Stock', 'jalma-inline-stock-editor-for-woocommerce' ),
+			__( 'Stock Editor', 'jalma-inline-stock-editor-for-woocommerce' ),
+			__( 'Stock Editor', 'jalma-inline-stock-editor-for-woocommerce' ),
 			'manage_woocommerce',
-			'jqsw-quick-stock',
+			'jise-stock-editor',
 			[ $this, 'render_page' ]
 		);
 	}
 
 	public function enqueue_assets( $hook ) {
-		if ( 'woocommerce_page_jqsw-quick-stock' !== $hook ) {
+		if ( 'woocommerce_page_jise-stock-editor' !== $hook ) {
 			return;
 		}
 		wp_enqueue_script( 'wc-enhanced-select' );
@@ -32,16 +32,16 @@ class JQSW_Admin_Page {
 
 		wp_enqueue_style(
 			'jqsw-admin',
-			JQSW_URL . 'admin/css/quick-stock.css',
+			JISE_URL . 'admin/css/quick-stock.css',
 			[],
-			JQSW_VERSION
+			JISE_VERSION
 		);
 
 		wp_enqueue_script(
 			'jqsw-admin',
-			JQSW_URL . 'admin/js/quick-stock.js',
+			JISE_URL . 'admin/js/quick-stock.js',
 			[ 'jquery', 'wc-enhanced-select' ],
-			JQSW_VERSION,
+			JISE_VERSION,
 			true
 		);
 
@@ -86,7 +86,7 @@ class JQSW_Admin_Page {
 	public function render_page() {
 		?>
 		<div class="wrap jqsw-wrap">
-			<h1><?php esc_html_e( 'Quick Stock', 'jalma-inline-stock-editor-for-woocommerce' ); ?></h1>
+			<h1><?php esc_html_e( 'Stock Editor', 'jalma-inline-stock-editor-for-woocommerce' ); ?></h1>
 			<p><?php esc_html_e( 'Update stock quantities and low-stock thresholds without opening each product. Click a field, type a new value, tab to the next. Changes save automatically.', 'jalma-inline-stock-editor-for-woocommerce' ); ?></p>
 
 			<?php
@@ -97,7 +97,7 @@ class JQSW_Admin_Page {
 			 *
 			 * @since 1.0.5
 			 */
-			do_action( 'jqsw_before_filters' );
+			do_action( 'jise_before_filters' );
 			?>
 
 			<div class="jqsw-filters">
@@ -111,7 +111,7 @@ class JQSW_Admin_Page {
 				 *
 				 * @since 1.0.5
 				 */
-				do_action( 'jqsw_filters_extra' );
+				do_action( 'jise_filters_extra' );
 				?>
 			</div>
 
@@ -123,7 +123,7 @@ class JQSW_Admin_Page {
 			 *
 			 * @since 1.0.5
 			 */
-			do_action( 'jqsw_before_table' );
+			do_action( 'jise_before_table' );
 			?>
 
 			<div class="jqsw-table-wrap">
@@ -151,13 +151,13 @@ class JQSW_Admin_Page {
 
 			<?php
 			/**
-			 * Fires after the entire Quick Stock UI. Use this to inject
+			 * Fires after the entire Stock Editor UI. Use this to inject
 			 * footer content, upgrade links, or documentation panels from
 			 * an add-on.
 			 *
 			 * @since 1.0.5
 			 */
-			do_action( 'jqsw_after_table' );
+			do_action( 'jise_after_table' );
 			?>
 		</div>
 		<?php

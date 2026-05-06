@@ -4,7 +4,7 @@ Tags: woocommerce, stock, inventory, bulk edit, low stock
 Requires at least: 5.0
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.1.2
+Stable tag: 1.1.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -31,14 +31,14 @@ Ideal for shops that do weekly inventory counts, quick post-delivery updates, ma
 = How it works =
 
 1. Install and activate. Requires WooCommerce.
-2. Go to **WooCommerce → Quick Stock**.
+2. Go to **WooCommerce → Stock Editor**.
 3. Edit stock and low-stock thresholds directly in the table. Changes save automatically.
 
 == Installation ==
 
 1. Upload the plugin folder to `/wp-content/plugins/`, or install via the **Plugins → Add New** screen.
 2. Activate **Jalma Inline Stock Editor for WooCommerce** through the **Plugins** menu.
-3. Go to **WooCommerce → Quick Stock** to start editing.
+3. Go to **WooCommerce → Stock Editor** to start editing.
 
 == Frequently Asked Questions ==
 
@@ -66,7 +66,7 @@ Not in the free version. A stock adjustment log is planned for the Pro version.
 
 == Changelog ==
 
-= 1.1.2 =
+= 1.1.3 =
 * Renamed plugin to "Jalma Inline Stock Editor for WooCommerce" per wp.org Plugin Review feedback. New slug `jalma-inline-stock-editor-for-woocommerce`. "Inline" describes the free version's core UX (inline table-cell editing) more accurately than the generic "Quick". No functional change — same code, more distinctive name.
 
 = 1.1.1 =
@@ -83,7 +83,7 @@ Not in the free version. A stock adjustment log is planned for the Pro version.
 * Housekeeping: moved admin runtime JavaScript and CSS from `assets/js/` and `assets/css/` to `admin/js/` and `admin/css/`. Keeps the `assets/` folder reserved for WordPress.org listing material (banner, icon, screenshots) so the plugin zip doesn't ship unnecessary bytes. No user-visible changes.
 
 = 1.0.5 =
-* Developer: added extension hooks for add-on plugins. Actions: `jqsw_before_register_routes`, `jqsw_after_register_routes`, `jqsw_after_product_update`, `jqsw_before_filters`, `jqsw_filters_extra`, `jqsw_before_table`, `jqsw_after_table`. Filter: `jqsw_product_row_data`. No visible changes for end users.
+* Developer: added extension hooks for add-on plugins. Actions: `jise_before_register_routes`, `jise_after_register_routes`, `jise_after_product_update`, `jise_before_filters`, `jise_filters_extra`, `jise_before_table`, `jise_after_table`. Filter: `jise_product_row_data`. No visible changes for end users.
 
 = 1.0.4 =
 * Improvement: replaced the Start tracking / Stop tracking button pair with a single "Track stock" checkbox per row. Consistent with the existing "Manage stock per variation" toggle for variable products and semantically correct for a boolean on/off state. Cleaner visually and less ambiguous than two near-identical buttons.
@@ -115,7 +115,7 @@ Not in the free version. A stock adjustment log is planned for the Pro version.
 
 == Upgrade Notice ==
 
-= 1.1.2 =
+= 1.1.3 =
 Plugin renamed to "Jalma Inline Stock Editor for WooCommerce" per wp.org review feedback. No functional change.
 
 = 1.1.0 =

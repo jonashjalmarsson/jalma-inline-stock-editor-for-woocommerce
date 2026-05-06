@@ -20,14 +20,14 @@ msgstr ""
 msgid "%s requires WooCommerce to be active."
 msgstr "%s kräver att WooCommerce är aktiverat."
 
-msgid "Quick Stock"
+msgid "Stock Editor"
 msgstr "Snabbt lager"
 
 msgid "Update stock quantities and low-stock thresholds without opening each product. Inline edit, keyboard navigation, full variation support."
 msgstr "Uppdatera lagersaldo och trösklar för lågt lager utan att öppna varje produkt. Inline-redigering, tangentbordsnavigering, fullt stöd för variationer."
 
-msgid "The interactive Quick Stock table will be rendered here. (Scaffold version — table renderer coming in the next iteration.)"
-msgstr "Quick Stock-tabellen renderas här. (Scaffold-version — tabellrenderaren kommer i nästa iteration.)"
+msgid "The interactive Stock Editor table will be rendered here. (Scaffold version — table renderer coming in the next iteration.)"
+msgstr "Stock Editor-tabellen renderas här. (Scaffold-version — tabellrenderaren kommer i nästa iteration.)"
 
 msgid "Product not found."
 msgstr "Produkten hittades inte."
