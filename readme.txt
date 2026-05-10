@@ -4,7 +4,7 @@ Tags: woocommerce, stock, inventory, bulk edit, low stock
 Requires at least: 5.0
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.1.5
+Stable tag: 1.1.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -64,21 +64,11 @@ Not in the free version. A stock adjustment log is planned for the Pro version.
 2. Variable product expanded to show per-variation stock editing.
 3. Category filter and search.
 
-== External services ==
-
-This plugin uses LemonSqueezy when you choose to purchase or activate the optional Pro add-on. The free plugin functions completely without any external service — the endpoints described below are only contacted when you click "Get Pro" or paste in a Pro license key on the settings page.
-
-LemonSqueezy is the payment processor and license-key issuer used by the Pro add-on (Jalma Inline Stock Editor PRO). Public LemonSqueezy License Keys API documentation: https://docs.lemonsqueezy.com/api/license-keys
-
-* **lemon.js overlay-checkout JavaScript** — fetched from `assets.lemonsqueezy.com/lemon.js` only on the plugin's settings page (`WooCommerce → Stock Editor`) and only while Pro is not yet installed. The script powers the "Get PRO" button's checkout overlay. No data is sent to LemonSqueezy until you click the button and complete a purchase. Public file URL (load test): https://assets.lemonsqueezy.com/lemon.js
-* **License key validation** — `POST /v1/licenses/validate` on `api.lemonsqueezy.com`. Called when you submit a Pro license key (either auto-submitted right after a purchase, or pasted by you from the LemonSqueezy email). The request body sends the license key only.
-* **License key activation** — `POST /v1/licenses/activate` on `api.lemonsqueezy.com`. Called after validation succeeds to register this site as one of the activations on your Pro license. The request body sends the license key and the site URL (from `get_site_url()`) as the activation instance name, so your LemonSqueezy account shows which site has activated the license.
-* **License-key fetch bridge** — a small REST endpoint on the plugin author's own site, namespace `lsq-bridge/v1` on `jonashjalmarsson.se`. Polled for up to ~5 seconds after a successful overlay checkout to retrieve the license key for the just-completed LemonSqueezy order, so you don't have to copy it from the receipt email by hand. The request sends the LemonSqueezy order ID only.
-
-LemonSqueezy Terms of Service: https://www.lemonsqueezy.com/terms
-LemonSqueezy Privacy Policy: https://www.lemonsqueezy.com/privacy
-
 == Changelog ==
+
+= 1.1.6 =
+* Removed the in-plugin LemonSqueezy purchase / license / install flow entirely. The free plugin no longer contacts any external service. Pro purchases now happen on the project landing page (https://jonashjalmarsson.se/plugins/jalma-inline-stock-editor-pro/) and Pro itself handles license activation in its own License tab. The "Get Pro" link in the Plugins screen and the upsell card above the stock table now simply open the landing page in a new tab.
+* Removed the External services section from this readme since the free plugin no longer uses any.
 
 = 1.1.5 =
 * Internal: identifiers in the bundled LemonSqueezy upsell module (PHP namespace, JS global, HTML/CSS IDs, query args, nonces) renamed to plugin-specific prefixes (`jise_lsq` / `JISE_Lsq`) per wp.org Plugin Review feedback, so they can't conflict with other plugins that bundle the same module. No user-visible change.
@@ -137,6 +127,9 @@ LemonSqueezy Privacy Policy: https://www.lemonsqueezy.com/privacy
 * Translation-ready, Swedish (sv_SE) included.
 
 == Upgrade Notice ==
+
+= 1.1.6 =
+Free plugin now focuses on stock editing only. Pro purchase and license flow moved to the Pro landing page and the Pro plugin's own License tab. Existing Pro installs keep working unchanged.
 
 = 1.1.5 =
 Internal renames in bundled purchase module to use plugin-specific prefixes per wp.org review. No user-visible change.

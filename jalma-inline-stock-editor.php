@@ -3,7 +3,7 @@
  * Plugin Name: Jalma Inline Stock Editor
  * Plugin URI: https://wordpress.org/plugins/jalma-inline-stock-editor/
  * Description: Edit WooCommerce stock quantities and low-stock thresholds directly from a single table — no more clicking into each product. Inline edit, keyboard navigation, category filter, full variation support.
- * Version: 1.1.5
+ * Version: 1.1.6
  * Author: jonashjalmarsson
  * Author URI: https://jonashjalmarsson.se
  * License: GPLv2 or later
@@ -33,7 +33,7 @@ add_action( 'before_woocommerce_init', function () {
 	}
 } );
 
-define( 'JISE_VERSION', '1.1.5' );
+define( 'JISE_VERSION', '1.1.6' );
 define( 'JISE_SLUG', 'jalma-inline-stock-editor' );
 define( 'JISE_PATH', plugin_dir_path( __FILE__ ) );
 define( 'JISE_URL', plugin_dir_url( __FILE__ ) );
@@ -72,31 +72,38 @@ add_action( 'plugins_loaded', function () {
 } );
 
 /*
- * PRO upsell + auto-install flow lives in the reusable JHLSQ\Purchase
- * module bundled at jhlsq-purchase/. Loaded late (admin_init) so the
- * Free plugin's settings page hook + the WooCommerce menu have already
- * been registered.
+ * Pro upsell — a simple "Get Pro" link in the Plugins-screen row, plus a
+ * small pill above the stock table that points users to the Pro landing
+ * page. The free plugin does NOT call any external service of its own;
+ * the Pro purchase, license activation and install all happen on the
+ * project landing page (URL below) and inside the Pro plugin's own
+ * License tab once installed. Keeps Free focused on stock editing only.
  */
-require_once JISE_PATH . 'jhlsq-purchase/jhlsq-purchase.php';
+const JISE_PRO_LANDING_URL = 'https://jonashjalmarsson.se/plugins/jalma-inline-stock-editor-pro/';
 
-add_action( 'admin_init', function () {
-	if ( ! class_exists( '\\JHLSQ\\Purchase' ) ) {
-		return;
+add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), function ( $links ) {
+	if ( class_exists( 'JISEP\\Tabs' ) ) {
+		return $links; // Pro is loaded — no need to upsell.
 	}
-	new \JHLSQ\Purchase( [
-		'free_basename'        => 'jalma-inline-stock-editor/jalma-inline-stock-editor.php',
-		'pro_basename'         => 'jalma-inline-stock-editor-pro/jalma-inline-stock-editor-pro.php',
-		'pro_class_check'      => 'JISEP\\Tabs',
-		'pro_label'            => 'Jalma Inline Stock Editor PRO',
-		'checkout_url'         => 'https://pay.jonashjalmarsson.se/checkout/buy/03c85738-f8d1-40ef-ae72-046503763ecb',
-		'download_url'         => 'https://plugins.jonashjalmarsson.se/jalma-inline-stock-editor-pro/jalma-inline-stock-editor-pro.zip',
-		'bridge_base'          => 'https://jonashjalmarsson.se/wp-json/lsq-bridge/v1',
-		'license_option'       => 'lsq_jalma-inline-stock-editor-pro',
-		'license_page_url'     => admin_url( 'admin.php?page=jise-license' ),
-		'settings_page_hook'   => 'woocommerce_page_jise-stock-editor',
-		'after_heading_action' => 'jise_before_filters',
-		'pitch_text'           => 'CSV export and import for product stock data — filter by category, include variations, two-step preview-before-apply flow',
-		'landing_page_url'     => '',
-		'install_action_name'  => 'jise_install_pro',
-	] );
+	$links[] = '<a href="' . esc_url( JISE_PRO_LANDING_URL ) . '" target="_blank" rel="noopener">'
+		. esc_html__( 'Get Pro', 'jalma-inline-stock-editor' )
+		. '</a>';
+	return $links;
+} );
+
+add_action( 'jise_before_filters', function () {
+	if ( class_exists( 'JISEP\\Tabs' ) ) {
+		return; // Pro is loaded — hide the upsell.
+	}
+	?>
+	<div class="jise-pro-pill" style="background:#f5f7ff;border:1px solid #d6dffd;border-radius:6px;padding:1em 1.25em;margin:1em 0 1.5em;max-width:760px;">
+		<span style="display:inline-block;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#3858e9;background:#e7ecfb;padding:.15em .55em;border-radius:3px;margin-bottom:.6em;"><?php esc_html_e( 'Pro upgrade', 'jalma-inline-stock-editor' ); ?></span>
+		<p style="margin:.2em 0 .8em;"><?php esc_html_e( 'CSV export and import for product stock data — filter by category, include variations, two-step preview-before-apply flow.', 'jalma-inline-stock-editor' ); ?></p>
+		<p style="margin:0;">
+			<a class="button" href="<?php echo esc_url( JISE_PRO_LANDING_URL ); ?>" target="_blank" rel="noopener">
+				<?php esc_html_e( 'Learn more →', 'jalma-inline-stock-editor' ); ?>
+			</a>
+		</p>
+	</div>
+	<?php
 } );
