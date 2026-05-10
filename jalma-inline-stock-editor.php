@@ -3,7 +3,7 @@
  * Plugin Name: Jalma Inline Stock Editor
  * Plugin URI: https://wordpress.org/plugins/jalma-inline-stock-editor/
  * Description: Edit WooCommerce stock quantities and low-stock thresholds directly from a single table — no more clicking into each product. Inline edit, keyboard navigation, category filter, full variation support.
- * Version: 1.1.3
+ * Version: 1.1.5
  * Author: jonashjalmarsson
  * Author URI: https://jonashjalmarsson.se
  * License: GPLv2 or later
@@ -33,7 +33,7 @@ add_action( 'before_woocommerce_init', function () {
 	}
 } );
 
-define( 'JISE_VERSION', '1.1.3' );
+define( 'JISE_VERSION', '1.1.5' );
 define( 'JISE_SLUG', 'jalma-inline-stock-editor' );
 define( 'JISE_PATH', plugin_dir_path( __FILE__ ) );
 define( 'JISE_URL', plugin_dir_url( __FILE__ ) );
@@ -85,18 +85,18 @@ add_action( 'admin_init', function () {
 	}
 	new \JHLSQ\Purchase( [
 		'free_basename'        => 'jalma-inline-stock-editor/jalma-inline-stock-editor.php',
-		'pro_basename'         => 'jalma-quick-stock-for-woocommerce-pro/jalma-quick-stock-for-woocommerce-pro.php',
-		'pro_class_check'      => 'JQSWP\\Tabs',
-		'pro_label'            => 'Stock Editor for WooCommerce PRO',
+		'pro_basename'         => 'jalma-inline-stock-editor-pro/jalma-inline-stock-editor-pro.php',
+		'pro_class_check'      => 'JISEP\\Tabs',
+		'pro_label'            => 'Jalma Inline Stock Editor PRO',
 		'checkout_url'         => 'https://pay.jonashjalmarsson.se/checkout/buy/03c85738-f8d1-40ef-ae72-046503763ecb',
-		'download_url'         => 'https://plugins.jonashjalmarsson.se/jalma-quick-stock-for-woocommerce-pro/jalma-quick-stock-for-woocommerce-pro.zip',
+		'download_url'         => 'https://plugins.jonashjalmarsson.se/jalma-inline-stock-editor-pro/jalma-inline-stock-editor-pro.zip',
 		'bridge_base'          => 'https://jonashjalmarsson.se/wp-json/lsq-bridge/v1',
-		'license_option'       => 'lsq_jalma-quick-stock-for-woocommerce-pro',
+		'license_option'       => 'lsq_jalma-inline-stock-editor-pro',
 		'license_page_url'     => admin_url( 'admin.php?page=jise-license' ),
 		'settings_page_hook'   => 'woocommerce_page_jise-stock-editor',
 		'after_heading_action' => 'jise_before_filters',
 		'pitch_text'           => 'CSV export and import for product stock data — filter by category, include variations, two-step preview-before-apply flow',
-		'landing_page_url'     => 'https://jonashjalmarsson.se/plugins/jalma-quick-stock-for-woocommerce-pro/',
+		'landing_page_url'     => '',
 		'install_action_name'  => 'jise_install_pro',
 	] );
 } );

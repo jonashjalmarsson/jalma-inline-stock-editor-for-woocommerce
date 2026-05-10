@@ -112,8 +112,8 @@ class Purchase {
 	}
 
 	/**
-	 * Enqueue lemon.js on Free's settings page only — no point loading
-	 * it elsewhere or once PRO is active.
+	 * Enqueue lemon.js + the upsell-card JS on Free's settings page only.
+	 * No point loading either elsewhere or once PRO is active.
 	 */
 	public function enqueue_lemon_js( $hook ) {
 		if ( $hook !== $this->config['settings_page_hook'] ) {
@@ -132,6 +132,28 @@ class Purchase {
 			'1.0',
 			true
 		);
+		wp_enqueue_script(
+			'jhlsq-purchase-upsell',
+			plugins_url( 'upsell.js', __FILE__ ),
+			[ 'lemonsqueezy' ],
+			'1.0.0',
+			true
+		);
+		wp_localize_script(
+			'jhlsq-purchase-upsell',
+			'jhlsqUpsell',
+			[
+				'bridgeBase'  => $this->config['bridge_base'],
+				'expandLabel' => $this->s( 'expand_label', 'Click to expand' ),
+				'text'        => [
+					'thanks'       => $this->s( 'js_thanks' ),
+					'licenseFound' => $this->s( 'js_license_found' ),
+					'pollFailed'   => $this->s( 'js_poll_failed' ),
+					'pollNetwork'  => $this->s( 'js_poll_network' ),
+					'pastePrompt'  => $this->s( 'js_paste_prompt' ),
+				],
+			]
+		);
 	}
 
 	/**
@@ -145,6 +167,7 @@ class Purchase {
 		}
 
 		$error = isset( $_GET['jhlsq_install_error'] ) ? sanitize_key( wp_unslash( $_GET['jhlsq_install_error'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$saved = isset( $_GET['jhlsq_license_saved'] ) && '1' === $_GET['jhlsq_license_saved']; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$error_messages = [
 			'empty'    => $this->s( 'err_empty' ),
 			'invalid'  => $this->s( 'err_invalid' ),
@@ -153,6 +176,48 @@ class Purchase {
 			'limit'    => $this->s( 'err_limit', 'This license has reached its activation limit. Deactivate it from another site in your LemonSqueezy account first, then try again.' ),
 			'activate' => $this->s( 'err_activate', 'License activation failed. Please try again or contact support.' ),
 		];
+
+		// License-saved success state (wp.org build path: license activated against
+		// LSQ + saved locally; user installs the PRO add-on manually). Renders in
+		// place of the upsell so the next step is unmistakable.
+		if ( $saved ) {
+			$pro_label    = isset( $this->config['pro_label'] ) ? (string) $this->config['pro_label'] : 'PRO';
+			$download_url = isset( $this->config['download_url'] ) ? (string) $this->config['download_url'] : '';
+			?>
+			<div class="jhlsq-pro-saved" style="background:#eff7ee;border:1px solid #b9dcb6;border-radius:6px;padding:1em 1.25em;margin:1em 0 1.5em;max-width:760px;">
+				<p style="margin:0 0 .5em;font-weight:600;color:#22592a;">
+					<?php echo esc_html( $this->s( 'saved_heading', 'License activated. One step to go.' ) ); ?>
+				</p>
+				<p style="margin:0 0 .8em;">
+					<?php
+					echo esc_html(
+						sprintf(
+							/* %s = Pro plugin label */
+							$this->s( 'saved_intro', 'Your license is saved on this site. To finish, install %s manually:' ),
+							$pro_label
+						)
+					);
+					?>
+				</p>
+				<ol style="margin:.2em 0 .8em 1.4em;">
+					<li><?php echo esc_html( $this->s( 'saved_step1', 'Download the Pro plugin zip from your purchase email — or use the button below.' ) ); ?></li>
+					<li><?php
+						/* translators: %s: WordPress admin menu path */
+						echo esc_html( sprintf( $this->s( 'saved_step2', 'In WordPress, go to %s.' ), 'Plugins → Add New Plugin → Upload Plugin' ) );
+					?></li>
+					<li><?php echo esc_html( $this->s( 'saved_step3', 'Upload the zip and activate the plugin. The license you just saved will pick up automatically.' ) ); ?></li>
+				</ol>
+				<?php if ( '' !== $download_url ) : ?>
+					<p style="margin:0;">
+						<a class="button button-primary" href="<?php echo esc_url( $download_url ); ?>" rel="noopener">
+							<?php echo esc_html( $this->s( 'saved_download_button', 'Download Pro zip' ) ); ?>
+						</a>
+					</p>
+				<?php endif; ?>
+			</div>
+			<?php
+			return;
+		}
 		?>
 		<div id="jhlsq-pro-upsell" class="jhlsq-pro-upsell" style="position:relative;background:#f5f7ff;border:1px solid #d6dffd;border-radius:6px;padding:1em 1.25em;margin:1em 0 1.5em;max-width:760px;">
 			<button type="button" id="jhlsq-pro-collapse" aria-label="<?php echo esc_attr( $this->s( 'collapse_label', 'Hide' ) ); ?>" title="<?php echo esc_attr( $this->s( 'collapse_label', 'Hide' ) ); ?>" style="position:absolute;top:.4em;right:.55em;background:none;border:none;font-size:18px;line-height:1;cursor:pointer;color:#94a3c8;padding:.1em .35em;">×</button>
@@ -184,104 +249,9 @@ class Purchase {
 				</details>
 			</div>
 		</div>
-		<script>
-		(function () {
-			var status     = document.getElementById('jhlsq-pro-status');
-			var pasteBlock = document.getElementById('jhlsq-pro-paste');
-			var keyInput   = document.getElementById('jhlsq-license-key-input');
-
-			// Collapse-to-pill behavior, persisted in localStorage. Per-browser by
-			// design — paid-plugin upsells should stay rediscoverable, not
-			// permanently invisible across all sessions.
-			var COLLAPSE_KEY = 'jhlsqProUpsellCollapsed';
-			var card         = document.getElementById('jhlsq-pro-upsell');
-			var collapseBtn  = document.getElementById('jhlsq-pro-collapse');
-			var content      = document.getElementById('jhlsq-pro-content');
-			var pill         = document.getElementById('jhlsq-pro-pill');
-			function setCollapsed(yes) {
-				if (yes) {
-					content.style.display    = 'none';
-					collapseBtn.style.display = 'none';
-					pill.style.cursor        = 'pointer';
-					pill.title               = pill.dataset.expandTitle || '';
-					pill.style.marginBottom  = '0';
-					card.style.padding       = '.5em .85em';
-				} else {
-					content.style.display    = '';
-					collapseBtn.style.display = '';
-					pill.style.cursor        = '';
-					pill.title               = '';
-					pill.style.marginBottom  = '.6em';
-					card.style.padding       = '1em 1.25em';
-				}
-			}
-			pill.dataset.expandTitle = <?php echo wp_json_encode( $this->s( 'expand_label', 'Click to expand' ) ); ?>;
-			try {
-				if (localStorage.getItem(COLLAPSE_KEY) === '1') { setCollapsed(true); }
-			} catch (e) { /* localStorage unavailable in some sandboxed admins */ }
-			collapseBtn.addEventListener('click', function () {
-				setCollapsed(true);
-				try { localStorage.setItem(COLLAPSE_KEY, '1'); } catch (e) {}
-			});
-			pill.addEventListener('click', function () {
-				if (content.style.display === 'none') {
-					setCollapsed(false);
-					try { localStorage.removeItem(COLLAPSE_KEY); } catch (e) {}
-				}
-			});
-
-			var bridgeBase = <?php echo wp_json_encode( $this->config['bridge_base'] ); ?>;
-			var T = {
-				thanks:        <?php echo wp_json_encode( $this->s( 'js_thanks' ) ); ?>,
-				licenseFound:  <?php echo wp_json_encode( $this->s( 'js_license_found' ) ); ?>,
-				pollFailed:    <?php echo wp_json_encode( $this->s( 'js_poll_failed' ) ); ?>,
-				pollNetwork:   <?php echo wp_json_encode( $this->s( 'js_poll_network' ) ); ?>,
-				pastePrompt:   <?php echo wp_json_encode( $this->s( 'js_paste_prompt' ) ); ?>
-			};
-
-			function setStatus(msg) { status.hidden = false; status.textContent = msg; }
-			function autoSubmit(key) { keyInput.value = key; keyInput.form.submit(); }
-
-			function pollOrder(orderId) {
-				var attempts = 0;
-				var max = 10;
-				(function tick() {
-					fetch(bridgeBase + '/order/' + encodeURIComponent(orderId), { credentials: 'omit' })
-						.then(function (r) { return r.ok ? r.json() : null; })
-						.then(function (data) {
-							if (data && data.found && data.license_key) {
-								setStatus(T.licenseFound);
-								autoSubmit(data.license_key);
-								return;
-							}
-							if (++attempts < max) { setTimeout(tick, 500); }
-							else { setStatus(T.pollFailed); pasteBlock.open = true; keyInput.focus(); }
-						})
-						.catch(function () {
-							if (++attempts < max) { setTimeout(tick, 500); }
-							else { setStatus(T.pollNetwork); pasteBlock.open = true; keyInput.focus(); }
-						});
-				})();
-			}
-
-			function init() {
-				if (!window.LemonSqueezy) return;
-				LemonSqueezy.Setup({
-					eventHandler: function (event) {
-						if (event && event.event === 'Checkout.Success') {
-							setStatus(T.thanks);
-							var orderId = event.data && event.data.order && (event.data.order.identifier || event.data.order.id);
-							if (orderId) { pollOrder(String(orderId)); }
-							else { setStatus(T.pastePrompt); pasteBlock.open = true; keyInput.focus(); }
-						}
-					}
-				});
-			}
-			if (document.readyState === 'complete') init();
-			else window.addEventListener('load', init);
-		})();
-		</script>
 		<?php
+		// Upsell-card behavior (collapse, LSQ overlay polling, license auto-submit)
+		// lives in upsell.js — enqueued via wp_enqueue_script in enqueue_lemon_js().
 	}
 
 	/**
@@ -360,26 +330,9 @@ class Purchase {
 		$instance_id = isset( $activate_body['instance']['id'] ) ? (string) $activate_body['instance']['id'] : '';
 		$expires_at  = $activate_body['license_key']['expires_at'] ?? null;
 
-		require_once ABSPATH . 'wp-admin/includes/file.php';
-		require_once ABSPATH . 'wp-admin/includes/misc.php';
-		require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
-		require_once ABSPATH . 'wp-admin/includes/plugin.php';
-
-		WP_Filesystem();
-
-		$upgrader = new \Plugin_Upgrader( new \Automatic_Upgrader_Skin() );
-		$installed = $upgrader->install( $this->config['download_url'], [ 'clear_destination' => true ] );
-		if ( is_wp_error( $installed ) || ! $installed ) {
-			wp_safe_redirect( add_query_arg( 'jhlsq_install_error', 'install', $back ) );
-			exit;
-		}
-
-		$activate = activate_plugin( $this->config['pro_basename'] );
-		if ( is_wp_error( $activate ) ) {
-			wp_safe_redirect( add_query_arg( 'jhlsq_install_error', 'install', $back ) );
-			exit;
-		}
-
+		// Save the license straight away. Pro's License tab picks this up on
+		// first load — no pending state. Done before any (optional) auto-install
+		// so a failed install still leaves a usable license behind.
 		update_option(
 			$this->config['license_option'],
 			[
@@ -391,7 +344,34 @@ class Purchase {
 			]
 		);
 
-		wp_safe_redirect( add_query_arg( 'jhlsq_pro_installed', '1', $this->config['license_page_url'] ) );
+		/* @wporg-strip-start */
+		// Self-hosted-only convenience: download + install + activate the Pro
+		// add-on automatically right after the license is saved, so the user
+		// lands on Pro's License tab pre-keyed. Stripped from wp.org build —
+		// wp.org guidelines forbid plugins changing the activation status of
+		// other plugins. wp.org users follow the manual download flow below.
+		require_once ABSPATH . 'wp-admin/includes/file.php';
+		require_once ABSPATH . 'wp-admin/includes/misc.php';
+		require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
+		require_once ABSPATH . 'wp-admin/includes/plugin.php';
+
+		WP_Filesystem();
+
+		$upgrader  = new \Plugin_Upgrader( new \Automatic_Upgrader_Skin() );
+		$installed = $upgrader->install( $this->config['download_url'], [ 'clear_destination' => true ] );
+		if ( ! is_wp_error( $installed ) && $installed ) {
+			$activate = activate_plugin( $this->config['pro_basename'] );
+			if ( ! is_wp_error( $activate ) ) {
+				wp_safe_redirect( add_query_arg( 'jhlsq_pro_installed', '1', $this->config['license_page_url'] ) );
+				exit;
+			}
+		}
+		/* @wporg-strip-end */
+
+		// wp.org build (auto-install stripped) OR auto-install failed: send the
+		// user back to the upsell page with a "license saved, here's the
+		// download link + manual install instructions" success state.
+		wp_safe_redirect( add_query_arg( 'jhlsq_license_saved', '1', $back ) );
 		exit;
 	}
 }
